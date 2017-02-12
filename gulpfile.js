@@ -9,6 +9,9 @@ var pump = require('pump');
 var rename = require('gulp-rename');
 var htmlmin = require('gulp-htmlmin');
 var bsync = require('browser-sync').create();
+var imagemin = require('gulp-imagemin');
+var estream = require('event-stream');
+var cssmin = require('gulp-cssmin');
 
 //Paths
 var paths = {
@@ -25,23 +28,40 @@ var paths = {
     },
     styles: {
         dest: 'dist/css',
-        origin: 'app/styles/style.scss',
+        origin: {
+            //SASS files
+            internal: [
+                'app/styles/style.scss'
+            ],
+            //CSS files from plugins
+            external: [
+                'app/styles/file.css'
+            ]
+        },
         origin_root: 'app/styles'
     },
     views: {
         dest: 'dist',
         origin: 'app/**/*.html'
+    },
+    images: {
+        dest: 'dist/images',
+        origin: 'app/images/*'
     }
 }
 
 //Tasks
 gulp.task('styles', function() {
-    return gulp.src(paths.styles.origin)
-        .pipe(sourcemaps.init())
-        .pipe(sass({
+    var cssStream = gulp.src(paths.styles.origin.external);
+    var sassStream = gulp.src(paths.styles.origin.internal).pipe(sass({
             outputStyle: 'compressed'
-        })).on('error', sass.logError)
+        })).on('error', sass.logError);
+
+    return estream.merge(cssStream, sassStream)
+        .pipe(sourcemaps.init())
+        .pipe(concat('styles.css'))
         .pipe(autoprefixer())
+        .pipe(cssmin())
         .pipe(sourcemaps.write('.'))
         .pipe(bsync.stream({match: '**/*.css'}))
         .pipe(gulp.dest(paths.styles.dest))
@@ -75,7 +95,8 @@ gulp.task('compress', function(cb) {
 gulp.task('views', function() {
     return gulp.src(paths.views.origin)
         .pipe(htmlmin({
-            collapseWhitespace: true
+            collapseWhitespace: true,
+            removeComments: true
         }))
         .pipe(bsync.stream({match: '**/*.html'}))
         .pipe(gulp.dest(paths.views.dest));
@@ -100,4 +121,18 @@ gulp.task('serve', function() {
         .on('change', bsync.reload);
     gulp.watch(paths.views.origin, ['views'])
         .on('change', bsync.reload);
+});
+
+gulp.task('imagemin', function() {
+    return gulp.src(paths.images.origin)
+        .pipe(imagemin())
+        .pipe(gulp.dest(paths.images.dest));
+});
+
+gulp.task('uncss', function() {
+    return gulp.src(paths.styles.dest + '/**/*.css')
+        .pipe(uncss({
+            html: [paths.views.dest + '/**/*.html']
+        }))
+        .pipe(gulp.dest(paths.scripts.dest));
 });
