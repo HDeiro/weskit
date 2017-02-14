@@ -35,7 +35,6 @@ var paths = {
             ],
             //CSS files from plugins
             external: [
-                'app/styles/file.css'
             ]
         },
         origin_root: 'app/styles'
@@ -59,7 +58,7 @@ gulp.task('styles', function() {
 
     return estream.merge(cssStream, sassStream)
         .pipe(sourcemaps.init())
-        .pipe(concat('styles.css'))
+        .pipe(concat('style.css'))
         .pipe(autoprefixer())
         .pipe(cssmin())
         .pipe(sourcemaps.write('.'))
