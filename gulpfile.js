@@ -124,7 +124,23 @@ gulp.task('serve', function() {
 
 gulp.task('imagemin', function() {
     return gulp.src(paths.images.origin)
-        .pipe(imagemin())
+        .pipe(imagemin([
+            imagemin.gifsicle({
+                interlaced: true,
+                optimizationLevel: 1 //Minimum 1 and Maximum 3
+            }),
+            imagemin.jpegtran({
+                progressive: true
+            }),
+            imagemin.optipng({
+                optimizationLevel: 5 //Minimum 0 and Maximum 7
+            }),
+            imagemin.svgo({
+                plugins: [
+                    {removeViewBox: true}
+                ]
+            })
+        ]))
         .pipe(gulp.dest(paths.images.dest));
 });
 
