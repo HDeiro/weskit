@@ -1,33 +1,35 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var sourcemaps = require('gulp-sourcemaps');
-var concat = require('gulp-concat');
-var babel = require('gulp-babel');
-var uglify = require('gulp-uglify');
-var pump = require('pump');
-var rename = require('gulp-rename');
-var htmlmin = require('gulp-htmlmin');
-var bsync = require('browser-sync').create();
-var imagemin = require('gulp-imagemin');
-var estream = require('event-stream');
-var cssmin = require('gulp-cssmin');
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
+const sourcemaps = require('gulp-sourcemaps');
+const concat = require('gulp-concat');
+const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
+const pump = require('pump');
+const rename = require('gulp-rename');
+const htmlmin = require('gulp-htmlmin');
+const bsync = require('browser-sync').create();
+const imagemin = require('gulp-imagemin');
+const estream = require('event-stream');
+const cssmin = require('gulp-cssmin');
 
 //Paths
-var paths = {
+const project_dist = 'www';
+
+const paths = {
     scripts: {
-        dest: 'dist/js',
+        dest: `${project_dist}/js`,
         origin: {
-            external: [
-            ],
             internal_root: 'app/scripts',
             internal: [
                 'app/scripts/script.js'
+            ],
+            external: [
             ]
         }
     },
     styles: {
-        dest: 'dist/css',
+        dest: `${project_dist}/css`,
         origin: {
             //SASS files
             internal: [
@@ -40,19 +42,19 @@ var paths = {
         origin_root: 'app/styles'
     },
     views: {
-        dest: 'dist',
+        dest: project_dist,
         origin: 'app/**/*.html'
     },
     images: {
-        dest: 'dist/images',
+        dest: `${project_dist}/images`,
         origin: 'app/images/*'
     }
 }
 
 //Tasks
 gulp.task('styles', function() {
-    var cssStream = gulp.src(paths.styles.origin.external);
-    var sassStream = gulp.src(paths.styles.origin.internal).pipe(sass({
+    const cssStream = gulp.src(paths.styles.origin.external);
+    const sassStream = gulp.src(paths.styles.origin.internal).pipe(sass({
             outputStyle: 'compressed'
         })).on('error', sass.logError);
 
@@ -79,7 +81,7 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('compress', function(cb) {
-    var options = {
+    const options = {
         preserveComments: 'license'
     };
     
@@ -110,16 +112,13 @@ gulp.task('watch', function() {
 gulp.task('serve', function() {
     bsync.init({
         server: {
-            baseDir: 'dist/'
+            baseDir: `${project_dist}/`
         }
     });
 
-    gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', ['scripts'])
-        .on('change', bsync.reload);
-    gulp.watch(paths.styles.origin_root + '/**/*.scss', ['styles'])
-        .on('change', bsync.reload);
-    gulp.watch(paths.views.origin, ['views'])
-        .on('change', bsync.reload);
+    gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', ['scripts']).on('change', bsync.reload);
+    gulp.watch(paths.styles.origin_root + '/**/*.scss', ['styles']).on('change', bsync.reload);
+    gulp.watch(paths.views.origin, ['views']).on('change', bsync.reload);
 });
 
 gulp.task('imagemin', function() {
