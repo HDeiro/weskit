@@ -15,14 +15,15 @@ const cssmin = require('gulp-cssmin');
 
 //Paths
 const project_dist = 'www';
+const project_src = 'app';
 
 const paths = {
     scripts: {
         dest: `${project_dist}/js`,
         origin: {
-            internal_root: 'app/scripts',
+            internal_root: `${project_src}/scripts`,
             internal: [
-                'app/scripts/script.js'
+                `${project_src}/scripts/script.js`
             ],
             external: [
             ]
@@ -33,21 +34,21 @@ const paths = {
         origin: {
             //SASS files
             internal: [
-                'app/styles/style.scss'
+                `${project_src}/styles/style.scss`
             ],
             //CSS files from plugins
             external: [
             ]
         },
-        origin_root: 'app/styles'
+        origin_root: `${project_src}/styles`
     },
     views: {
         dest: project_dist,
-        origin: 'app/**/*.html'
+        origin: `${project_src}/**/*.html`
     },
     images: {
         dest: `${project_dist}/images`,
-        origin: 'app/images/*'
+        origin: `${project_src}/images/*`
     }
 }
 
