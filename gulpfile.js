@@ -12,6 +12,8 @@ const bsync = require('browser-sync').create();
 const imagemin = require('gulp-imagemin');
 const estream = require('event-stream');
 const cssmin = require('gulp-cssmin');
+const htmlreplace = require('gulp-html-replace');
+const runsequence = require('run-sequence');
 
 //Paths
 const project_dist = 'www';
@@ -98,7 +100,11 @@ gulp.task('views', function() {
     return gulp.src(paths.views.origin)
         .pipe(htmlmin({
             collapseWhitespace: true,
-            removeComments: true
+            removeComments: true,
+            ignoreCustomComments: [
+                /build:[a-zA-Z]{1,}/,
+                /endbuild/,
+            ]
         }))
         .pipe(bsync.stream({match: '**/*.html'}))
         .pipe(gulp.dest(paths.views.dest));
@@ -150,4 +156,18 @@ gulp.task('uncss', function() {
             html: [paths.views.dest + '/**/*.html']
         }))
         .pipe(gulp.dest(paths.scripts.dest));
+});
+
+gulp.task('htmlreplace', function() {
+    gulp.src(`${project_dist}/index.html`)
+        .pipe(htmlreplace({
+            'js': 'js/script.min.js'
+        }))
+        .pipe(gulp.dest(`${project_dist}/`));
+});
+
+gulp.task('production', function() {
+    runsequence('views', 'scripts', 'compress', 'styles', 'htmlreplace', function() {
+        console.log('The production task has finished.');
+    });
 });
