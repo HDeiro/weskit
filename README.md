@@ -1,6 +1,6 @@
 # Weskit
 
-Weskit is an template for use on development of web projects.
+Weskit is an template for use to start the development of web projects.
 
 ## Dependencies
 
