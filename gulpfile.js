@@ -1,3 +1,9 @@
+//####################################
+//
+// Lists of Gulp Plugins
+//
+//####################################
+
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
@@ -16,10 +22,51 @@ const htmlreplace = require('gulp-html-replace');
 const runsequence = require('run-sequence');
 const clean = require('gulp-clean');
 
-//Paths
+//####################################
+//
+// List of Gulp tasks
+// 
+// You can edit tasks names. For
+// example: by default there's a css 
+// task, but you can exchange the name
+// as you want. You could call it as
+// styles, and you use it like:
+//
+//      gulp styles
+//
+//####################################
+
+const tasks = {
+    css: 'css',
+    uncss: 'uncss',
+    js_concat: 'scripts',
+    js_uglify: 'compress',
+    html: 'views',
+    html_replace: 'htmlreplace',
+    watch: 'watch',
+    server: 'server',
+    images: 'images',
+    production: 'production',
+    clean: 'clean'
+};
+
+//####################################
+//
+// List of Gulp paths
+// 
+// You can rename the project folders
+// as you want. For example, you could
+// call the production folder as 'build'.
+//
+// You can also exchange the working
+// project folders. For example, you
+// can call your js folders as 
+// 'JavaScripts' instead of 'js'
+//
+//####################################
+
 const project_dist = 'www';
 const project_src = 'app';
-
 const paths = {
     //JavaScripts
     scripts: {
@@ -64,8 +111,18 @@ const paths = {
     ]
 }
 
-//Tasks
-gulp.task('styles', () => {
+
+//####################################
+//
+// List of Gulp tasks
+// 
+// There's some gulp tasks to work
+// with code concatenation, uglification,
+// replaces and a lot of other possibilities
+//
+//####################################
+
+gulp.task(tasks.css, () => {
     const cssStream = gulp.src(paths.styles.origin.external);
     const sassStream = gulp.src(paths.styles.origin.internal)
         .pipe(sass({
@@ -83,7 +140,7 @@ gulp.task('styles', () => {
         .pipe(gulp.dest(paths.styles.dest))
 });
 
-gulp.task('scripts', () => {
+gulp.task(tasks.js_concat, () => {
     return gulp.src(paths.scripts.origin.external.concat(paths.scripts.origin.internal))
         .pipe(sourcemaps.init())
         .pipe(concat('script.js'))
@@ -95,7 +152,7 @@ gulp.task('scripts', () => {
         .pipe(gulp.dest(paths.scripts.dest));
 });
 
-gulp.task('compress', cb => {
+gulp.task(tasks.js_uglify, cb => {
     const options = {
         preserveComments: 'license'
     };
@@ -108,7 +165,7 @@ gulp.task('compress', cb => {
     ], cb);
 });
 
-gulp.task('views', () => {
+gulp.task(tasks.html, () => {
     return gulp.src(paths.views.origin)
         .pipe(htmlmin({
             collapseWhitespace: true,
@@ -122,13 +179,13 @@ gulp.task('views', () => {
         .pipe(gulp.dest(paths.views.dest));
 });
 
-gulp.task('watch', () => {
+gulp.task(tasks.watch, () => {
     gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', ['scripts']);
     gulp.watch(paths.styles.origin_root + '/**/*.{sass,scss}', ['styles']);
     gulp.watch(paths.views.origin, ['views']);
 });
 
-gulp.task('serve', () => {
+gulp.task(tasks.server, () => {
     bsync.init({
         server: {
             baseDir: `${project_dist}/`
@@ -140,7 +197,7 @@ gulp.task('serve', () => {
     gulp.watch(paths.views.origin, ['views']).on('change', bsync.reload);
 });
 
-gulp.task('imagemin', () => {
+gulp.task(tasks.images, () => {
     return gulp.src(paths.images.origin)
         .pipe(imagemin([
             imagemin.gifsicle({
@@ -162,7 +219,7 @@ gulp.task('imagemin', () => {
         .pipe(gulp.dest(paths.images.dest));
 });
 
-gulp.task('uncss', () => {
+gulp.task(tasks.uncss, () => {
     return gulp.src(paths.styles.dest + '/**/*.css')
         .pipe(uncss({
             html: [paths.views.dest + '/**/*.html']
@@ -170,21 +227,21 @@ gulp.task('uncss', () => {
         .pipe(gulp.dest(paths.scripts.dest));
 });
 
-gulp.task('htmlreplace', () => {
-    gulp.src(`${project_dist}/index.html`)
+gulp.task(tasks.html_replace, () => {
+    gulp.src(`${project_dist}/index.{html,php}`)
         .pipe(htmlreplace({
             'js': 'js/script.min.js'
         }))
         .pipe(gulp.dest(`${project_dist}/`));
 });
 
-gulp.task('production', () => {
+gulp.task(tasks.production, () => {
     runsequence('views', 'scripts', 'compress', 'styles', 'htmlreplace', () => {
         console.log('The production task has finished.');
     });
 });
 
-gulp.task('clean', () => {
+gulp.task(tasks.clean, () => {
     return gulp.src(paths.to_be_cleanded)
         .pipe(clean({ force: true }));
 });
