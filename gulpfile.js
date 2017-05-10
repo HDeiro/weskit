@@ -55,7 +55,7 @@ const paths = {
     //Images to be minified
     images: {
         dest: `${project_dist}/images`,
-        origin: `${project_src}/images/*`
+        origin: `${project_src}/images/**/*`
     },
     //Folders and files to be cleaned after development
     to_be_cleanded: [
