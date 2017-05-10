@@ -21,6 +21,7 @@ const cssmin = require('gulp-cssmin');
 const htmlreplace = require('gulp-html-replace');
 const runsequence = require('run-sequence');
 const clean = require('gulp-clean');
+const fs = require('fs');
 
 //####################################
 //
@@ -228,9 +229,13 @@ gulp.task(tasks.uncss, () => {
 });
 
 gulp.task(tasks.html_replace, () => {
+    //The content of your css file as an string.
+    let css_content = '<style>' + fs.readFileSync(`${paths.styles.dest}/style.css`, 'utf8') + '</style>';
+
     gulp.src(`${project_dist}/index.{html,php}`)
         .pipe(htmlreplace({
-            'js': 'js/script.min.js'
+            'js': 'js/script.min.js',
+            'css': css_content
         }))
         .pipe(gulp.dest(`${project_dist}/`));
 });
