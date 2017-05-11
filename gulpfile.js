@@ -1,3 +1,5 @@
+'use strict';
+
 //####################################
 //
 // Lists of Gulp Plugins
@@ -181,9 +183,9 @@ gulp.task(tasks.html, () => {
 });
 
 gulp.task(tasks.watch, () => {
-    gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', ['scripts']);
-    gulp.watch(paths.styles.origin_root + '/**/*.{sass,scss}', ['styles']);
-    gulp.watch(paths.views.origin, ['views']);
+    gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', [tasks.js_concat]);
+    gulp.watch(paths.styles.origin_root + '/**/*.{sass,scss}', [tasks.css]);
+    gulp.watch(paths.views.origin, [tasks.html]);
 });
 
 gulp.task(tasks.server, () => {
@@ -193,9 +195,12 @@ gulp.task(tasks.server, () => {
         }
     });
 
-    gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', ['scripts']).on('change', bsync.reload);
-    gulp.watch(paths.styles.origin_root + '/**/*.scss', ['styles']).on('change', bsync.reload);
-    gulp.watch(paths.views.origin, ['views']).on('change', bsync.reload);
+    gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', [tasks.js_concat])
+        .on('change', bsync.reload);
+    gulp.watch(paths.styles.origin_root + '/**/*.scss', [tasks.css])
+        .on('change', bsync.reload);
+    gulp.watch(paths.views.origin, [tasks.html])
+        .on('change', bsync.reload);
 });
 
 gulp.task(tasks.images, () => {
@@ -223,7 +228,7 @@ gulp.task(tasks.images, () => {
 gulp.task(tasks.uncss, () => {
     return gulp.src(paths.styles.dest + '/**/*.css')
         .pipe(uncss({
-            html: [paths.views.dest + '/**/*.html']
+            html: [paths.views.dest + '/**/*.{html,php}']
         }))
         .pipe(gulp.dest(paths.scripts.dest));
 });
@@ -241,7 +246,7 @@ gulp.task(tasks.html_replace, () => {
 });
 
 gulp.task(tasks.production, () => {
-    runsequence('views', 'scripts', 'compress', 'styles', 'htmlreplace', () => {
+    runsequence(tasks.html, tasks.js_concat, tasks.js_compress, tasks.css, tasks.html_replace, () => {
         console.log('The production task has finished.');
     });
 });
