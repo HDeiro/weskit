@@ -1,9 +1,7 @@
 'use strict';
 
 //####################################
-//
 // Lists of Gulp Plugins
-//
 //####################################
 
 const gulp = require('gulp');
@@ -24,9 +22,9 @@ const htmlreplace = require('gulp-html-replace');
 const runsequence = require('run-sequence');
 const clean = require('gulp-clean');
 const fs = require('fs');
+const yargs = require('yargs').argv;
 
 //####################################
-//
 // List of Gulp tasks
 // 
 // You can edit tasks names. For
@@ -36,7 +34,6 @@ const fs = require('fs');
 // styles, and you use it like:
 //
 //      gulp styles
-//
 //####################################
 
 const tasks = {
@@ -54,7 +51,6 @@ const tasks = {
 };
 
 //####################################
-//
 // List of Gulp paths
 // 
 // You can rename the project folders
@@ -65,7 +61,6 @@ const tasks = {
 // project folders. For example, you
 // can call your js folders as 
 // 'JavaScripts' instead of 'js'
-//
 //####################################
 
 const project_dist = 'www';
@@ -116,13 +111,11 @@ const paths = {
 
 
 //####################################
-//
 // List of Gulp tasks
 // 
 // There's some gulp tasks to work
 // with code concatenation, uglification,
 // replaces and a lot of other possibilities
-//
 //####################################
 
 gulp.task(tasks.css, () => {
@@ -234,13 +227,32 @@ gulp.task(tasks.uncss, () => {
 });
 
 gulp.task(tasks.html_replace, () => {
-    //The content of your css file as an string.
-    let css_content = '<style>' + fs.readFileSync(`${paths.styles.dest}/style.css`, 'utf8') + '</style>';
+    let css = `${paths.styles.dest}/style.css`;
+    let js = `${paths.scripts.dest}/script.js`;
+
+    //Use gulp taskname --xcss
+    if(yargs.xcss) {
+       //Take the content of CSS file and rip off all the "../" references to refer from the index.html
+        css = fs.readFileSync(css, 'utf8').split('../').join('');
+        css = `<style>${css}</style>`;
+        console.log('Exchanged the CSS reference for the stylesheet content');
+    }
+
+    //Use gulp taskname --xjs
+    if(yargs.xjs) {
+        //Take the content of JavaScript concatenated file and put it direct on body of index.html
+        js = fs.readFileSync(js, 'utf8');
+        js = `<script>${js}</script>`;
+        console.log('Exchanged the JS reference for the script content');
+    }
+
+    // You can use both flags like:
+    //    gulp htmlreplace --xcss --xjs
 
     gulp.src(`${project_dist}/index.{html,php}`)
         .pipe(htmlreplace({
-            'js': 'js/script.min.js',
-            'css': css_content
+            'js': js,
+            'css': css
         }))
         .pipe(gulp.dest(`${project_dist}/`));
 });

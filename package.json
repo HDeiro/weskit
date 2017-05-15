@@ -34,14 +34,13 @@
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.4.1",
     "gulp-uglify": "^2.0.1",
-    "pump": "^1.0.2",
-    "run-sequence": "^1.2.2",
     "imagemin-gifsicle": "^5.1.0",
     "imagemin-jpegtran": "^5.0.2",
     "imagemin-optipng": "^5.2.1",
-    "imagemin-svgo": "^5.2.1"
-  },
-  "dependencies": {
-    "fs": "0.0.1-security"
+    "imagemin-svgo": "^5.2.1",
+    "pump": "^1.0.2",
+    "fs": "0.0.1-security",
+    "run-sequence": "^1.2.2",
+    "yargs": "^8.0.1"
   }
 }
