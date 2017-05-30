@@ -66,7 +66,7 @@ const tasks = {
 const project_dist = 'www';
 const project_src = 'app';
 const paths = {
-    //JavaScripts
+    // JavaScripts
     scripts: {
         dest: `${project_dist}/js`,
         origin: {
@@ -78,31 +78,31 @@ const paths = {
             ]
         }
     },
-    //Styles (SASS/CSS)
+    // Styles (SASS/CSS)
     styles: {
         dest: `${project_dist}/css`,
         origin: {
-            //SASS files
+            // SASS files
             internal: [
                 `${project_src}/styles/style.{scss,sass}`
             ],
-            //CSS files
+            // CSS files
             external: [
             ]
         },
         origin_root: `${project_src}/styles`
     },
-    //Views
+    // Views
     views: {
         dest: project_dist,
         origin: `${project_src}/**/*.{html,php}`
     },
-    //Images to be minified
+    // Images to be minified
     images: {
         dest: `${project_dist}/images`,
         origin: `${project_src}/images/**/*`
     },
-    //Folders and files to be cleaned after development
+    // Folders and files to be cleaned after development
     to_be_cleanded: [
         project_dist,
         'node_modules'
@@ -188,12 +188,9 @@ gulp.task(tasks.server, () => {
         }
     });
 
-    gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', [tasks.js_concat])
-        .on('change', bsync.reload);
-    gulp.watch(paths.styles.origin_root + '/**/*.scss', [tasks.css])
-        .on('change', bsync.reload);
-    gulp.watch(paths.views.origin, [tasks.html])
-        .on('change', bsync.reload);
+    gulp.watch(paths.scripts.origin.internal_root + '/**/*.js', [tasks.js_concat]).on('change', bsync.reload);
+    gulp.watch(paths.styles.origin_root + '/**/*.scss', [tasks.css]).on('change', bsync.reload);
+    gulp.watch(paths.views.origin, [tasks.html]).on('change', bsync.reload);
 });
 
 gulp.task(tasks.images, () => {
@@ -201,13 +198,13 @@ gulp.task(tasks.images, () => {
         .pipe(imagemin([
             imagemin.gifsicle({
                 interlaced: true,
-                optimizationLevel: 1 //Minimum 1 and Maximum 3
+                optimizationLevel: 1 // Minimum 1 and Maximum 3
             }),
             imagemin.jpegtran({
                 progressive: true
             }),
             imagemin.optipng({
-                optimizationLevel: 5 //Minimum 0 and Maximum 7
+                optimizationLevel: 5 // Minimum 0 and Maximum 7
             }),
             imagemin.svgo({
                 plugins: [
@@ -231,15 +228,19 @@ gulp.task(tasks.html_replace, () => {
         let css = `${paths.styles.dest}/style.css`;
         let js = `${paths.scripts.dest}/script.js`;
 
-        //Use gulp htmlreplace --xcss
+        // Use gulp htmlreplace --xcss
         if(yargs.xcss) {
-           //Take the content of CSS file and rip off all the "../" references to refer from the index.html
+           // Take the content of CSS file and rip off all the "../" 
+           // references to refer from the index.html
             css = fs.readFileSync(css, 'utf8').split('../').join('');
             css = `<style>${css}</style>`;
             console.log('Exchanged the CSS reference for the stylesheet content');
         }
 
-        //Use gulp htmlreplace --xjs
+        // Use gulp htmlreplace --xjs
+        //
+        // You can use like: gulp htmlreplace --xjs --xcss
+        // to apply css and javascript replacement
         if(yargs.xjs) {
             //Take the content of JavaScript concatenated file and put it direct on body of index.html
             js = fs.readFileSync(js, 'utf8');
@@ -247,8 +248,11 @@ gulp.task(tasks.html_replace, () => {
             console.log('Exchanged the JS reference for the script content');
         }
 
-        // You can use both flags like: gulp htmlreplace --xcss --xjs
-        gulp.src(`${project_dist}/index.{html,php}`)
+        // It takes all html/php files and apply the html
+        // replacement. It's important to say that all the
+        // files will have the same reference/content for
+        // CSS or JavaScript.
+        gulp.src(`${project_dist}/**/*.{html,php}`)
             .pipe(htmlreplace({
                 'js': js,
                 'css': css
@@ -258,9 +262,16 @@ gulp.task(tasks.html_replace, () => {
 });
 
 gulp.task(tasks.production, () => {
-    runsequence(tasks.html, tasks.js_concat, tasks.js_compress, tasks.css, tasks.html_replace, () => {
-        console.log('The production task has finished.');
-    });
+    runsequence(
+        tasks.html, 
+        tasks.js_concat, 
+        tasks.js_compress, 
+        tasks.css, 
+        tasks.html_replace, 
+        () => {
+            console.log('The production task has finished.');
+        }
+    );
 });
 
 gulp.task(tasks.clean, () => {
