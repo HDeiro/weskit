@@ -42,5 +42,8 @@
     "fs": "0.0.1-security",
     "run-sequence": "^1.2.2",
     "yargs": "^8.0.1"
+  },
+  "dependencies": {
+    "sprity": "^1.0.8"
   }
 }

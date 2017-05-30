@@ -38,7 +38,6 @@ const yargs = require('yargs').argv;
 
 const tasks = {
     css: 'css',
-    uncss: 'uncss',
     js_concat: 'js',
     js_uglify: 'compress',
     html: 'views',
@@ -213,14 +212,6 @@ gulp.task(tasks.images, () => {
             })
         ]))
         .pipe(gulp.dest(paths.images.dest));
-});
-
-gulp.task(tasks.uncss, () => {
-    return gulp.src(paths.styles.dest + '/**/*.css')
-        .pipe(uncss({
-            html: [paths.views.dest + '/**/*.{html,php}']
-        }))
-        .pipe(gulp.dest(paths.scripts.dest));
 });
 
 gulp.task(tasks.html_replace, () => {
