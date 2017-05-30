@@ -44,6 +44,8 @@
     "yargs": "^8.0.1"
   },
   "dependencies": {
-    "sprity": "^1.0.8"
+    "gulp-if": "^2.0.2",
+    "sprity": "^1.0.8",
+    "sprity-sass": "^1.0.4"
   }
 }

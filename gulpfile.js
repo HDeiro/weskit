@@ -23,6 +23,8 @@ const runsequence = require('run-sequence');
 const clean = require('gulp-clean');
 const fs = require('fs');
 const yargs = require('yargs').argv;
+const gulpif = require('gulp-if');
+const sprity = require('sprity');
 
 //####################################
 // List of Gulp tasks
@@ -37,6 +39,7 @@ const yargs = require('yargs').argv;
 //####################################
 
 const tasks = {
+    sprites: 'sprites',
     css: 'css',
     js_concat: 'js',
     js_uglify: 'compress',
@@ -99,7 +102,8 @@ const paths = {
     // Images to be minified
     images: {
         dest: `${project_dist}/images`,
-        origin: `${project_src}/images/**/*`
+        origin: `${project_src}/images/**/*`,
+        sprites_origins: `${project_src}/images/sprites/**/*`,
     },
     // Folders and files to be cleaned after development
     to_be_cleanded: [
@@ -212,6 +216,18 @@ gulp.task(tasks.images, () => {
             })
         ]))
         .pipe(gulp.dest(paths.images.dest));
+});
+
+gulp.task(tasks.sprites, () => {
+    return sprity.src({
+        src: `${paths.images.sprites_origins}.{png,jpg}`,
+        style: `./sprites.scss`,
+        processor: 'sass'
+    }).pipe(gulpif(
+        '*.png',
+        gulp.dest(paths.images.dest),
+        gulp.dest(paths.styles.origin_root)
+    ))
 });
 
 gulp.task(tasks.html_replace, () => {
