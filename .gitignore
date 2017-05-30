@@ -1,3 +1,5 @@
 node_modules/
 www/
+app/images/sprites/*
+app/styles/sprites.scss
 npm-debug.log
