@@ -39,7 +39,7 @@ const yargs = require('yargs').argv;
 const tasks = {
     css: 'css',
     uncss: 'uncss',
-    js_concat: 'scripts',
+    js_concat: 'js',
     js_uglify: 'compress',
     html: 'views',
     html_replace: 'htmlreplace',
@@ -227,34 +227,34 @@ gulp.task(tasks.uncss, () => {
 });
 
 gulp.task(tasks.html_replace, () => {
-    let css = `${paths.styles.dest}/style.css`;
-    let js = `${paths.scripts.dest}/script.js`;
+    runsequence(tasks.html, () => {
+        let css = `${paths.styles.dest}/style.css`;
+        let js = `${paths.scripts.dest}/script.js`;
 
-    //Use gulp taskname --xcss
-    if(yargs.xcss) {
-       //Take the content of CSS file and rip off all the "../" references to refer from the index.html
-        css = fs.readFileSync(css, 'utf8').split('../').join('');
-        css = `<style>${css}</style>`;
-        console.log('Exchanged the CSS reference for the stylesheet content');
-    }
+        //Use gulp htmlreplace --xcss
+        if(yargs.xcss) {
+           //Take the content of CSS file and rip off all the "../" references to refer from the index.html
+            css = fs.readFileSync(css, 'utf8').split('../').join('');
+            css = `<style>${css}</style>`;
+            console.log('Exchanged the CSS reference for the stylesheet content');
+        }
 
-    //Use gulp taskname --xjs
-    if(yargs.xjs) {
-        //Take the content of JavaScript concatenated file and put it direct on body of index.html
-        js = fs.readFileSync(js, 'utf8');
-        js = `<script>${js}</script>`;
-        console.log('Exchanged the JS reference for the script content');
-    }
+        //Use gulp htmlreplace --xjs
+        if(yargs.xjs) {
+            //Take the content of JavaScript concatenated file and put it direct on body of index.html
+            js = fs.readFileSync(js, 'utf8');
+            js = `<script>${js}</script>`;
+            console.log('Exchanged the JS reference for the script content');
+        }
 
-    // You can use both flags like:
-    //    gulp htmlreplace --xcss --xjs
-
-    gulp.src(`${project_dist}/index.{html,php}`)
-        .pipe(htmlreplace({
-            'js': js,
-            'css': css
-        }))
-        .pipe(gulp.dest(`${project_dist}/`));
+        // You can use both flags like: gulp htmlreplace --xcss --xjs
+        gulp.src(`${project_dist}/index.{html,php}`)
+            .pipe(htmlreplace({
+                'js': js,
+                'css': css
+            }))
+            .pipe(gulp.dest(`${project_dist}/`));
+    });
 });
 
 gulp.task(tasks.production, () => {
