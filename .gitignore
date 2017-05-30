@@ -3,3 +3,5 @@ www/
 app/images/sprites/*
 app/styles/sprites.scss
 npm-debug.log
+
+!app/images/sprites/.gitkeep
