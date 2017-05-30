@@ -137,6 +137,7 @@ gulp.task(tasks.css, () => {
         .pipe(sourcemaps.write('.'))
         .pipe(bsync.stream({match: '**/*.css'}))
         .pipe(gulp.dest(paths.styles.dest))
+        .on('end', () => console.log(`SASS files has been concatenated and minifed`));
 });
 
 gulp.task(tasks.js_concat, () => {
@@ -148,7 +149,8 @@ gulp.task(tasks.js_concat, () => {
         }))
         .pipe(sourcemaps.write('.'))
         .pipe(bsync.stream({match: '**/*.js'}))
-        .pipe(gulp.dest(paths.scripts.dest));
+        .pipe(gulp.dest(paths.scripts.dest))
+        .on('end', () => console.log(`Listed origin and external JavaScript files has been concatenated`));
 });
 
 gulp.task(tasks.js_uglify, cb => {
@@ -159,9 +161,10 @@ gulp.task(tasks.js_uglify, cb => {
     pump([
         gulp.src(paths.scripts.dest + '/*.js'),
         uglify(options),
-        rename('scripts.min.js'),
+        rename('script.min.js'),
         gulp.dest(paths.scripts.dest)
-    ], cb);
+    ], cb)
+    .on('end', () => console.log(`${paths.scripts.dest}/script.js has been minified`));
 });
 
 gulp.task(tasks.html, () => {
@@ -175,7 +178,8 @@ gulp.task(tasks.html, () => {
             ]
         }))
         .pipe(bsync.stream({match: '**/*.{html,php}'}))
-        .pipe(gulp.dest(paths.views.dest));
+        .pipe(gulp.dest(paths.views.dest))
+        .on('end', () => console.log(`${paths.views.origin} has been minified`));
 });
 
 gulp.task(tasks.watch, () => {
@@ -215,7 +219,8 @@ gulp.task(tasks.images, () => {
                 ]
             })
         ]))
-        .pipe(gulp.dest(paths.images.dest));
+        .pipe(gulp.dest(paths.images.dest))
+        .on('end', () => console.log(`${paths.images.dest} has now optimizated images from ${paths.images.origin}`));
 });
 
 gulp.task(tasks.sprites, () => {
@@ -227,7 +232,10 @@ gulp.task(tasks.sprites, () => {
         '*.png',
         gulp.dest(paths.images.dest),
         gulp.dest(paths.styles.origin_root)
-    ))
+    )).on('end', () => {
+        console.log(`${paths.images.dest}/sprite.png has been created`);
+        console.log(`${paths.styles.origin_root}/sprites.scss has been created`);
+    })
 });
 
 gulp.task(tasks.html_replace, () => {
@@ -264,7 +272,10 @@ gulp.task(tasks.html_replace, () => {
                 'js': js,
                 'css': css
             }))
-            .pipe(gulp.dest(`${project_dist}/`));
+            .pipe(gulp.dest(`${project_dist}/`))
+            .on('end', () => {
+                console.log('HTML replacement is done');
+            });
     });
 });
 
