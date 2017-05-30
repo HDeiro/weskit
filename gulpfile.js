@@ -154,17 +154,22 @@ gulp.task(tasks.js_concat, () => {
 });
 
 gulp.task(tasks.js_uglify, cb => {
-    const options = {
-        preserveComments: 'license'
-    };
-    
-    pump([
-        gulp.src(paths.scripts.dest + '/*.js'),
-        uglify(options),
-        rename('script.min.js'),
-        gulp.dest(paths.scripts.dest)
-    ], cb)
-    .on('end', () => console.log(`${paths.scripts.dest}/script.js has been minified`));
+    runsequence(tasks.js_concat, () => {
+        const options = {
+            preserveComments: 'license',
+            compress: {
+                drop_console: true
+            }
+        };
+        
+        pump([
+            gulp.src(paths.scripts.dest + '/script.js'),
+            uglify(options),
+            rename('script.min.js'),
+            gulp.dest(paths.scripts.dest)
+        ], cb)
+        .on('end', () => console.log(`${paths.scripts.dest}/script.js has been minified`));
+    });
 });
 
 gulp.task(tasks.html, () => {
@@ -281,9 +286,8 @@ gulp.task(tasks.html_replace, () => {
 
 gulp.task(tasks.production, () => {
     runsequence(
-        tasks.html, 
-        tasks.js_concat, 
-        tasks.js_compress, 
+        tasks.images,
+        tasks.js_uglify, 
         tasks.css, 
         tasks.html_replace, 
         () => {
