@@ -53,7 +53,10 @@ const tasks = {
         bundler: 'sass'
     },
     jsons: "jsons",
-    views: "views"
+    views: "views",
+    metadata: {
+        copy: "copy-metadata"
+    }
 };
 
 //####################################
@@ -131,6 +134,13 @@ const paths = {
     },
     jsons: {
         source: `${path_source}/**/*.json`,
+        buildTo: `${path_build}`
+    },
+    metadata: {
+        source: [
+            `${path_source}/humans.txt`,
+            `${path_source}/robots.txt`
+        ],
         buildTo: `${path_build}`
     }
 }
@@ -250,3 +260,9 @@ gulp.task(tasks.views, _ => {
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
         .on('end', _ => gutil.log(gutil.colors.green(`\t[View] The views has been generated`)));
 });
+
+// Copy metadata
+gulp.task(tasks.metadata.copy, _ => {
+    gulp.src(paths.metadata.source)
+        .pipe(gulp.dest(paths.metadata.buildTo))
+})
