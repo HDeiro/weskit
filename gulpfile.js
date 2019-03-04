@@ -26,6 +26,7 @@ const gulpif = require('gulp-if');
 const sprity = require('sprity');
 const gutil = require('gulp-util');
 const sass = require('gulp-sass');
+const minifyInline = require('gulp-minify-inline');
 sass.compiler = require('node-sass');
 
 //####################################
@@ -49,7 +50,8 @@ const tasks = {
     },
     sass: {
         bundler: 'sass'
-    }
+    },
+    views: "views"
 };
 
 //####################################
@@ -70,49 +72,53 @@ const path_source = 'app';
 const paths = {
     js: {
         "internal-critical": {
-            "destination": `${path_build}/js`,
+            "buildTo": `${path_build}/js`,
             "bundle": []
         },
         "internal": {
-            "destination": `${path_build}/js`,
+            "buildTo": `${path_build}/js`,
             "bundle": []
         },
         "external-critical": {
-            "destination": `${path_build}/js`,
+            "buildTo": `${path_build}/js`,
             "bundle": []
         },
         "external": {
-            "destination": `${path_build}/js`,
+            "buildTo": `${path_build}/js`,
             "bundle": []
         }
     },
     css: {
         "external-critical": {
-            "destination": `${path_build}/css`,
+            "buildTo": `${path_build}/css`,
             "bundle": []
         },
         "external": {
-            "destination": `${path_build}/css`,
+            "buildTo": `${path_build}/css`,
             "bundle": []
         }
     },
     sass: {
         "internal-critical": {
-            "destination": `${path_build}/css`,
+            "buildTo": `${path_build}/css`,
             "bundle": []
         },
         "internal": {
-            "destination": `${path_build}/css`,
+            "buildTo": `${path_build}/css`,
             "bundle": []
         },
         "external-critical": {
-            "destination": `${path_build}/css`,
+            "buildTo": `${path_build}/css`,
             "bundle": []
         },
         "external": {
-            "destination": `${path_build}/css`,
+            "buildTo": `${path_build}/css`,
             "bundle": ['www/**/*.scss']
         }
+    },
+    views: {
+        source: `${path_source}/**/*.{html,php}`,
+        buildTo: `${path_build}`
     }
 }
 
@@ -164,9 +170,9 @@ gulp.task(tasks.js.bundler, _ => {
             .pipe(gulpif(MODE_PRODUCTION, uglify(JS_COMPRESS_OPTIONS)))
             .pipe(sourcemaps.write('.'))
             .pipe(bsync.stream({match: '**/*.js'}))
-            .pipe(gulp.dest(`${bundleItem.destination}`))
+            .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-            .on('end', _ => gutil.log(gutil.colors.green(`\t[JS] Bundle ${bundleItem.destination}/${bundle}.js has been generated`)))
+            .on('end', _ => gutil.log(gutil.colors.green(`\t[JS] Bundle ${bundleItem.buildTo}/${bundle}.js has been generated`)))
     });
 });
 
@@ -182,9 +188,9 @@ gulp.task(tasks.css.bundler, _ => {
             .pipe(gulpif(MODE_PRODUCTION, cssmin()))
             .pipe(sourcemaps.write('.'))
             .pipe(bsync.stream({match: '**/*.css'}))
-            .pipe(gulp.dest(`${bundleItem.destination}`))
+            .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-            .on('end', _ => gutil.log(gutil.colors.green(`\t[CSS] Bundle ${bundleItem.destination}/${bundle}.css has been generated`)))
+            .on('end', _ => gutil.log(gutil.colors.green(`\t[CSS] Bundle ${bundleItem.buildTo}/${bundle}.css has been generated`)))
     });
 });
 
@@ -201,8 +207,26 @@ gulp.task(tasks.sass.bundler, _ => {
             .pipe(gulpif(MODE_PRODUCTION, cssmin()))
             .pipe(sourcemaps.write('.'))
             .pipe(bsync.stream({match: '**/*.css'}))
-            .pipe(gulp.dest(`${bundleItem.destination}`))
+            .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-            .on('end', _ => gutil.log(gutil.colors.green(`\t[SASS] Bundle ${bundleItem.destination}/${bundle}.css has been generated`)))
+            .on('end', _ => gutil.log(gutil.colors.green(`\t[SASS] Bundle ${bundleItem.buildTo}/${bundle}.css has been generated`)))
     });
+});
+
+// HTML compressor
+gulp.task(tasks.views, _ => {
+    gulp.src(paths.views.source)
+        .pipe(htmlmin({
+            collapseWhitespace: true,
+            removeComments: true,
+            ignoreCustomComments: [
+                /build:[a-zA-Z]{1,}/,
+                /endbuild/,
+            ]
+        }))
+        .pipe(minifyInline())
+        .pipe(bsync.stream({match: '**/*.{html,php}'}))
+        .pipe(gulp.dest(paths.views.buildTo))
+        .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+        .on('end', _ => gutil.log(gutil.colors.green(`\t[View] The views has been generated`)));
 });
