@@ -342,3 +342,18 @@ gulp.task(tasks.images, _ => {
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
         .on('end', _ => gutil.log(gutil.colors.green(`\t[Image] Image files has been generated`)));
 });
+
+// Images sprites
+gulp.task(tasks.sprites, _ => {
+	gulp.src(paths.images.sprites.source)
+		.pipe(spritesmith({
+			cssName: `generated-sprite.css`,
+			imgName: 'generated-sprite.png'
+		}))
+		.pipe(gulp.dest(paths.images.sprites.buildTo))
+		.on('end', _ => {
+			gutil.log(gutil.colors.green(`\t[Sprite] Sprite image file has been generated`));
+			gutil.log(gutil.colors.green(`\t[Sprite] Sprite SASS file has been generated`));
+			gutil.log(gutil.colors.yellow(`\t[Sprite] Move and edit the ${paths.images.sprites.buildTo}/generated-sprite.css as you need`));
+		});
+});
