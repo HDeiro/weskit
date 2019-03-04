@@ -71,49 +71,56 @@ const path_build = 'www';
 const path_source = 'app';
 const paths = {
     js: {
+        "pwa-cache-service-worker": {
+            buildTo: `${path_build}`,
+            bundle: [`${path_source}/pwa-cache-service-worker.js`],
+            options: {
+                skipSourceMapGeneration: true
+            }
+        },
         "internal-critical": {
-            "buildTo": `${path_build}/js`,
-            "bundle": []
+            buildTo: `${path_build}/js`,
+            bundle: []
         },
         "internal": {
-            "buildTo": `${path_build}/js`,
-            "bundle": []
+            buildTo: `${path_build}/js`,
+            bundle: []
         },
         "external-critical": {
-            "buildTo": `${path_build}/js`,
-            "bundle": []
+            buildTo: `${path_build}/js`,
+            bundle: []
         },
         "external": {
-            "buildTo": `${path_build}/js`,
-            "bundle": []
+            buildTo: `${path_build}/js`,
+            bundle: []
         }
     },
     css: {
         "external-critical": {
-            "buildTo": `${path_build}/css`,
-            "bundle": []
+            buildTo: `${path_build}/css`,
+            bundle: []
         },
         "external": {
-            "buildTo": `${path_build}/css`,
-            "bundle": []
+            buildTo: `${path_build}/css`,
+            bundle: []
         }
     },
     sass: {
         "internal-critical": {
-            "buildTo": `${path_build}/css`,
-            "bundle": []
+            buildTo: `${path_build}/css`,
+            bundle: []
         },
         "internal": {
-            "buildTo": `${path_build}/css`,
-            "bundle": []
+            buildTo: `${path_build}/css`,
+            bundle: []
         },
         "external-critical": {
-            "buildTo": `${path_build}/css`,
-            "bundle": []
+            buildTo: `${path_build}/css`,
+            bundle: []
         },
         "external": {
-            "buildTo": `${path_build}/css`,
-            "bundle": ['www/**/*.scss']
+            buildTo: `${path_build}/css`,
+            bundle: ['www/**/*.scss']
         }
     },
     views: {
@@ -164,11 +171,11 @@ gulp.task(tasks.js.bundler, _ => {
         let bundleItem = paths.js[bundle];
 
         gulp.src(bundleItem.bundle)
-            .pipe(sourcemaps.init())
+            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.init()))
             .pipe(concat(`${bundle}.js`))
             .pipe(babel(JS_BABEL_CONFIG))
             .pipe(gulpif(MODE_PRODUCTION, uglify(JS_COMPRESS_OPTIONS)))
-            .pipe(sourcemaps.write('.'))
+            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.write('.')))
             .pipe(bsync.stream({match: '**/*.js'}))
             .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
@@ -182,11 +189,11 @@ gulp.task(tasks.css.bundler, _ => {
         let bundleItem = paths.css[bundle];
 
         gulp.src(bundleItem.bundle)
-            .pipe(sourcemaps.init())
+            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.init()))
             .pipe(concat(`${bundle}.css`))
             .pipe(autoprefixer())
             .pipe(gulpif(MODE_PRODUCTION, cssmin()))
-            .pipe(sourcemaps.write('.'))
+            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.write('.')))
             .pipe(bsync.stream({match: '**/*.css'}))
             .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
@@ -200,12 +207,12 @@ gulp.task(tasks.sass.bundler, _ => {
         let bundleItem = paths.sass[bundle];
 
         gulp.src(bundleItem.bundle)
-            .pipe(sourcemaps.init())
+            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.init()))
             .pipe(sass(SASS_CONFIG))
             .pipe(concat(`${bundle}.css`))
             .pipe(autoprefixer())
             .pipe(gulpif(MODE_PRODUCTION, cssmin()))
-            .pipe(sourcemaps.write('.'))
+            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.write('.')))
             .pipe(bsync.stream({match: '**/*.css'}))
             .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
