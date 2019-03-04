@@ -32,6 +32,7 @@
 		"gulp-htmlmin": "^3.0.0",
 		"gulp-if": "^2.0.2",
 		"gulp-imagemin": "^3.1.1",
+		"gulp-jsonmin": "^1.2.0",
 		"gulp-minify-inline": "^1.1.0",
 		"gulp-postcss": "^6.3.0",
 		"gulp-rename": "^1.2.2",

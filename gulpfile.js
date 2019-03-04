@@ -25,8 +25,9 @@ const yargs = require('yargs').argv;
 const gulpif = require('gulp-if');
 const sprity = require('sprity');
 const gutil = require('gulp-util');
-const sass = require('gulp-sass');
+const jsonmin = require('gulp-jsonmin');
 const minifyInline = require('gulp-minify-inline');
+const sass = require('gulp-sass');
 sass.compiler = require('node-sass');
 
 //####################################
@@ -51,6 +52,7 @@ const tasks = {
     sass: {
         bundler: 'sass'
     },
+    jsons: "jsons",
     views: "views"
 };
 
@@ -125,6 +127,10 @@ const paths = {
     },
     views: {
         source: `${path_source}/**/*.{html,php}`,
+        buildTo: `${path_build}`
+    },
+    jsons: {
+        source: `${path_source}/**/*.json`,
         buildTo: `${path_build}`
     }
 }
@@ -219,6 +225,13 @@ gulp.task(tasks.sass.bundler, _ => {
             .on('end', _ => gutil.log(gutil.colors.green(`\t[SASS] Bundle ${bundleItem.buildTo}/${bundle}.css has been generated`)))
     });
 });
+
+// JSON minifier
+gulp.task(tasks.jsons, () => {
+    gulp.src(paths.jsons.source)
+        .pipe(jsonmin())
+        .pipe(gulp.dest(paths.jsons.buildTo));
+})
 
 // HTML compressor
 gulp.task(tasks.views, _ => {

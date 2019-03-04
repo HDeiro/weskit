@@ -1,0 +1,22 @@
+{
+    "short_name": "Weskit",
+    "name": "Weskit",
+    "description": "[Description of your app]",
+    "icons": [
+      {
+        "src": "/images/logo-pwa-128.png",
+        "type": "image/png",
+        "sizes": "128x128"
+      },
+      {
+        "src": "/images/logo-pwa-512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": "/?source=pwa",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "display": "standalone",
+    "scope": "/"
+  }
