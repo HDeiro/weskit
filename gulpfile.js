@@ -32,9 +32,9 @@ sass.compiler = require('node-sass');
 
 //####################################
 // List of Gulp tasks
-// 
+//
 // You can edit tasks names. For
-// example: by default there's a css 
+// example: by default there's a css
 // task, but you can exchange the name
 // as you want. You could call it as
 // styles, and you use it like:
@@ -57,19 +57,21 @@ const tasks = {
     },
     jsons: "jsons",
     views: "views",
-    fonts: "fonts"
+    fonts: "fonts",
+    sounds: "sounds",
+    videos: "videos"
 };
 
 //####################################
 // List of Gulp paths
-// 
+//
 // You can rename the project folders
 // as you want. For example, you could
 // call the production folder as 'build'.
 //
 // You can also exchange the working
 // project folders. For example, you
-// can call your js folders as 
+// can call your js folders as
 // 'JavaScripts' instead of 'js'
 //####################################
 
@@ -147,9 +149,23 @@ const paths = {
     fonts: {
         source: [
             `${path_source}/fonts/**/*.{ttf,otf,eot,woff,svg,svgz}`,
-            `${path_source}/fonts/*.{ttf,otf}`
+            `${path_source}/fonts/*.{ttf,otf,eot,woff,svg,svgz}`
         ],
         buildTo: `${path_build}/fonts`
+    },
+    sounds: {
+        source: [
+            `${path_source}/sounds/**/*.{mp3,aac,wav,ogg}`,
+            `${path_source}/sounds/*.{mp3,aac,wav,ogg}`
+        ],
+        buildTo: `${path_build}/sounds`
+    },
+    videos: {
+        source: [
+            `${path_source}/videos/**/*.{mp4,ogg,webm}`,
+            `${path_source}/videos/*.{mp4,ogg,webm}`
+        ],
+        buildTo: `${path_build}/videos`
     }
 }
 
@@ -183,7 +199,7 @@ const listBundle = (group, filter) => {
 
 //####################################
 // List of Gulp tasks
-// 
+//
 // There's some gulp tasks to work
 // with code concatenation, uglification,
 // replaces and a lot of other possibilities
@@ -277,10 +293,26 @@ gulp.task(tasks.metadata.copy, _ => {
         .on('end', _ => gutil.log(gutil.colors.green(`\t[Metadata] Metadata files has been generated`)));
 });
 
-// Generate fonts
+// Copy fonts
 gulp.task(tasks.fonts, _ => {
     gulp.src(paths.fonts.source)
         .pipe(gulp.dest(paths.fonts.buildTo))
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
         .on('end', _ => gutil.log(gutil.colors.green(`\t[Font] Font files has been generated`)));
+});
+
+// Copy sounds
+gulp.task(tasks.sounds, _ => {
+    gulp.src(paths.sounds.source)
+        .pipe(gulp.dest(paths.sounds.buildTo))
+        .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+        .on('end', _ => gutil.log(gutil.colors.green(`\t[Sound] Sound files has been generated`)));
+});
+
+// Copy videos
+gulp.task(tasks.videos, _ => {
+    gulp.src(paths.videos.source)
+        .pipe(gulp.dest(paths.videos.buildTo))
+        .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+        .on('end', _ => gutil.log(gutil.colors.green(`\t[Video] Video files has been generated`)));
 });
