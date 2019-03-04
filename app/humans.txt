@@ -1,0 +1,14 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Add here your team members
+
+# THANKS
+
+    Thanks to the Weskit development team.
+
+# TECHNOLOGY COLOPHON
+
+    Weskit, HTML5, CSS3, JavaScript, Gulp

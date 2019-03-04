@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="msapplication-tap-highlight" content="no">
     
-    <!-- Browser`s header background color -->
+    <!-- Browser's header background color -->
     <meta name="theme-color" content="#000000">
     <meta name="msapplication-navbutton-color" content="#000000">
     
@@ -20,27 +20,27 @@
     <meta name="author" content="">    
     <meta name="copyright" content="">    
 
-    <!-- Add to homescreen for Chrome on Android
+    <!-- Add to homescreen for Chrome on Android -->
     <meta name="mobile-web-app-capable" content="no">
     <meta name="application-name" content="Weskit">
-    <link rel="icon" sizes="192x192" href="images/touch-icon-192x192.png"> -->
+    <link rel="icon" sizes="192x192" href="images/pwa-icons/icon-192x192.png">
 
-    <!-- Add to homescreen for Safari on iOS
+    <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="no">
     <meta name="apple-mobile-web-app-status-bar-style" content="#000000">
     <meta name="apple-mobile-web-app-title" content="Weskit">
-    <link rel="apple-touch-icon" href="images/touch-icon.png"> -->
+    <link rel="apple-touch-icon" href="images/pwa-icons/icon-192x192.png">
 
     <!-- Custom twitter cardbox
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="site address">
     <meta name="twitter:title" content="site title">
     <meta name="twitter:description" content="site description">
-    <meta name="twitter:image" content="images/my_image.jpg"> -->
+    <meta name="twitter:image" content="images/pwa-icons/icon-512x512.jpg"> -->
 
     <!-- Custom Facebook cardbox
     <meta property="og:title" content="page title">
-    <meta property="og:image" content="images/my_image.jpg">
+    <meta property="og:image" content="images/pwa-icons/icon-512x512.jpg">
     <meta property="og:description" content="site description"> -->
 
     <title>WESKIT</title>
@@ -64,6 +64,18 @@
     
     <script src="js/script.js"></script>
     <!-- endbuild -->
+    
+    <!-- Service Worker for cache handling -->
+    <script>
+        if('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .register('/pwa-cache-service-worker.js', { scope: '/' })
+                .then(registration => console.log('Service Worker Registered'));
+
+            navigator.serviceWorker.ready
+                .then(registration => console.log('Service Worker Ready'));
+        }
+    </script>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
     <script>
