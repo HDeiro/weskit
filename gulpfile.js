@@ -39,17 +39,12 @@ const sprity = require('sprity');
 //####################################
 
 const tasks = {
-    sprites: 'sprites',
-    css: 'css',
-    js_concat: 'js',
-    js_uglify: 'compress',
-    html: 'views',
-    html_replace: 'htmlreplace',
-    watch: 'watch',
-    server: 'server',
-    images: 'images',
-    production: 'production',
-    clean: 'clean'
+    js: {
+        bundler: 'js'
+    },
+    css: {
+        bundler: 'css'
+    }
 };
 
 //####################################
@@ -79,17 +74,41 @@ const paths = {
         },
         "external-critical": {
             "destination": `${path_build}/js`,
-            "bundle": [
-                'www/a/*.js'
-            ]
+            "bundle": []
         },
         "external": {
             "destination": `${path_build}/js`,
             "bundle": []
         }
+    },
+    css: {
+        "internal-critical": {
+            "destination": `${path_build}/css`,
+            "bundle": []
+        },
+        "internal": {
+            "destination": `${path_build}/css`,
+            "bundle": []
+        },
+        "external-critical": {
+            "destination": `${path_build}/css`,
+            "bundle": []
+        },
+        "external": {
+            "destination": `${path_build}/css`,
+            "bundle": []
+        }
     }
 }
 
+//####################################
+// Utilitary Functions
+//####################################
+const listBundle = (group, filter) => {
+    return Object.keys(paths[group])
+        .filter(bundle => paths[group][bundle].bundle.length)
+        .filter(bundle => filter ? filter == bundle : true)
+}
 
 //####################################
 // List of Gulp tasks
@@ -99,16 +118,17 @@ const paths = {
 // replaces and a lot of other possibilities
 //####################################
 
-gulp.task(tasks.js_concat, () => {
-    Object.keys(paths.js)
-        .filter(bundle => paths.js[bundle].bundle.length)
-        .filter(bundle => yargs.bundle ? yargs.bundle == bundle : true)
-        .forEach(bundle => {
-            gulp.src(paths.js[bundle].bundle)
-                .pipe(concat(`${bundle}.js`))
-                .pipe(babel({presets: ['es2015']}))
-                .pipe(sourcemaps.write('.'))
-                .pipe(bsync.stream({match: '**/*.js'}))
-                .pipe(gulp.dest(`${paths.js[bundle].destination}`))
-        });
+// JavaScript Bundler
+gulp.task(tasks.js.bundler, _ => {
+    listBundle("js", yargs.bundle).forEach(bundle => {
+        gulp.src(paths.js[bundle].bundle)
+            .pipe(concat(`${bundle}.js`))
+            .pipe(babel({presets: ['es2015']}))
+            .pipe(sourcemaps.write('.'))
+            .pipe(bsync.stream({match: '**/*.js'}))
+            .pipe(gulp.dest(`${paths.js[bundle].destination}`))
+    });
 });
+
+// CSS Bundler
+
