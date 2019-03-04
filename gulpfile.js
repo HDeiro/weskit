@@ -52,11 +52,12 @@ const tasks = {
     sass: {
         bundler: 'sass'
     },
-    jsons: "jsons",
-    views: "views",
     metadata: {
         copy: "copy-metadata"
-    }
+    },
+    jsons: "jsons",
+    views: "views",
+    fonts: "fonts"
 };
 
 //####################################
@@ -142,6 +143,13 @@ const paths = {
             `${path_source}/robots.txt`
         ],
         buildTo: `${path_build}`
+    },
+    fonts: {
+        source: [
+            `${path_source}/fonts/**/*.{ttf,otf,eot,woff,svg,svgz}`,
+            `${path_source}/fonts/*.{ttf,otf}`
+        ],
+        buildTo: `${path_build}/fonts`
     }
 }
 
@@ -265,4 +273,14 @@ gulp.task(tasks.views, _ => {
 gulp.task(tasks.metadata.copy, _ => {
     gulp.src(paths.metadata.source)
         .pipe(gulp.dest(paths.metadata.buildTo))
-})
+        .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+        .on('end', _ => gutil.log(gutil.colors.green(`\t[Metadata] Metadata files has been generated`)));
+});
+
+// Generate fonts
+gulp.task(tasks.fonts, _ => {
+    gulp.src(paths.fonts.source)
+        .pipe(gulp.dest(paths.fonts.buildTo))
+        .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+        .on('end', _ => gutil.log(gutil.colors.green(`\t[Font] Font files has been generated`)));
+});
