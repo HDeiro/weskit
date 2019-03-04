@@ -5,7 +5,6 @@
 //####################################
 
 const gulp = require('gulp');
-const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
 const concat = require('gulp-concat');
@@ -26,6 +25,8 @@ const yargs = require('yargs').argv;
 const gulpif = require('gulp-if');
 const sprity = require('sprity');
 const gutil = require('gulp-util');
+const sass = require('gulp-sass');
+sass.compiler = require('node-sass');
 
 //####################################
 // List of Gulp tasks
@@ -45,6 +46,9 @@ const tasks = {
     },
     css: {
         bundler: 'css'
+    },
+    sass: {
+        bundler: 'sass'
     }
 };
 
@@ -71,33 +75,43 @@ const paths = {
         },
         "internal": {
             "destination": `${path_build}/js`,
-            "bundle": ['www/**/*.js']
+            "bundle": []
         },
         "external-critical": {
             "destination": `${path_build}/js`,
-            "bundle": ['www/**/*.js']
+            "bundle": []
         },
         "external": {
             "destination": `${path_build}/js`,
-            "bundle": ['www/**/*.js']
+            "bundle": []
         }
     },
     css: {
-        "internal-critical": {
-            "destination": `${path_build}/css`,
-            "bundle": ['www/**/*.css']
-        },
-        "internal": {
-            "destination": `${path_build}/css`,
-            "bundle": ['www/**/*.css']
-        },
         "external-critical": {
             "destination": `${path_build}/css`,
-            "bundle": ['www/**/*.css']
+            "bundle": []
         },
         "external": {
             "destination": `${path_build}/css`,
-            "bundle": ['www/**/*.css']
+            "bundle": []
+        }
+    },
+    sass: {
+        "internal-critical": {
+            "destination": `${path_build}/css`,
+            "bundle": []
+        },
+        "internal": {
+            "destination": `${path_build}/css`,
+            "bundle": []
+        },
+        "external-critical": {
+            "destination": `${path_build}/css`,
+            "bundle": []
+        },
+        "external": {
+            "destination": `${path_build}/css`,
+            "bundle": ['www/**/*.scss']
         }
     }
 }
@@ -115,6 +129,9 @@ const JS_COMPRESS_OPTIONS = {
 };
 const JS_BABEL_CONFIG = {
     presets: ['@babel/env']
+};
+const SASS_CONFIG = {
+    outputStyle: "compressed"
 };
 
 //####################################
@@ -168,5 +185,24 @@ gulp.task(tasks.css.bundler, _ => {
             .pipe(gulp.dest(`${bundleItem.destination}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
             .on('end', _ => gutil.log(gutil.colors.green(`\t[CSS] Bundle ${bundleItem.destination}/${bundle}.css has been generated`)))
+    });
+});
+
+// Sass Bundler
+gulp.task(tasks.sass.bundler, _ => {
+    listBundle("sass", yargs.bundle).forEach(bundle => {
+        let bundleItem = paths.sass[bundle];
+
+        gulp.src(bundleItem.bundle)
+            .pipe(sourcemaps.init())
+            .pipe(sass(SASS_CONFIG))
+            .pipe(concat(`${bundle}.css`))
+            .pipe(autoprefixer())
+            .pipe(gulpif(MODE_PRODUCTION, cssmin()))
+            .pipe(sourcemaps.write('.'))
+            .pipe(bsync.stream({match: '**/*.css'}))
+            .pipe(gulp.dest(`${bundleItem.destination}`))
+            .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+            .on('end', _ => gutil.log(gutil.colors.green(`\t[SASS] Bundle ${bundleItem.destination}/${bundle}.css has been generated`)))
     });
 });
