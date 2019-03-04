@@ -23,10 +23,10 @@ const clean = require('gulp-clean');
 const fs = require('fs');
 const yargs = require('yargs').argv;
 const gulpif = require('gulp-if');
-const sprity = require('sprity');
 const gutil = require('gulp-util');
 const jsonmin = require('gulp-jsonmin');
 const minifyInline = require('gulp-minify-inline');
+const spritesmith = require('gulp.spritesmith');
 const sass = require('gulp-sass');
 sass.compiler = require('node-sass');
 
@@ -59,7 +59,9 @@ const tasks = {
     views: "views",
     fonts: "fonts",
     sounds: "sounds",
-    videos: "videos"
+	videos: "videos",
+	images: "images",
+	sprites: "sprites"
 };
 
 //####################################
@@ -166,7 +168,17 @@ const paths = {
             `${path_source}/videos/*.{mp4,ogg,webm}`
         ],
         buildTo: `${path_build}/videos`
-    }
+	},
+	images: {
+		compress: {
+			source: `${path_source}/images/**/*.{jpg,png,jpeg,gif,svg}`,
+			buildTo: `${path_build}/images`
+		},
+		sprites: {
+			source: `${path_source}/images/sprites/*.{jpg,png,jpeg,gif,svg}`,
+			buildTo: `${path_build}/images`
+		}
+	}
 }
 
 //####################################
@@ -315,4 +327,18 @@ gulp.task(tasks.videos, _ => {
         .pipe(gulp.dest(paths.videos.buildTo))
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
         .on('end', _ => gutil.log(gutil.colors.green(`\t[Video] Video files has been generated`)));
+});
+
+// Image compression
+gulp.task(tasks.images, _ => {
+	gulp.src(paths.images.compress.source)
+		.pipe(imagemin([
+			imagemin.gifsicle({interlaced: true, optimizationLevel: 2}),
+			imagemin.jpegtran({progressive: true}),
+			imagemin.optipng({optimizationLevel: 5}),
+			imagemin.svgo({plugins:[{removeViewBox: true}]})
+		]))
+		.pipe(gulp.dest(paths.images.compress.buildTo))
+        .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+        .on('end', _ => gutil.log(gutil.colors.green(`\t[Image] Image files has been generated`)));
 });

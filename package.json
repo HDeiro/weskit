@@ -40,6 +40,7 @@
 		"gulp-sourcemaps": "^2.4.1",
 		"gulp-uglify": "^2.0.1",
 		"gulp-util": "^3.0.8",
+		"gulp.spritesmith": "^6.9.0",
 		"imagemin-gifsicle": "^5.1.0",
 		"imagemin-jpegtran": "^5.0.2",
 		"imagemin-optipng": "^5.2.1",
@@ -47,7 +48,6 @@
 		"node-sass": "^4.11.0",
 		"pump": "^1.0.2",
 		"run-sequence": "^1.2.2",
-		"sprity": "^1.0.8",
 		"sprity-sass": "^1.0.4",
 		"yargs": "^8.0.1"
 	},
