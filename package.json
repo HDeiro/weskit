@@ -1,51 +1,52 @@
 {
-  "name": "weskit",
-  "version": "1.0.0",
-  "description": "",
-  "main": "gulpfile.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HDeiro/weskit.git"
-  },
-  "author": "Hugo Deiró <hugodeiro@gmail.com> (hdeiro.github.io)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/HDeiro/weskit/issues"
-  },
-  "homepage": "https://github.com/HDeiro/weskit#readme",
-  "devDependencies": {
-    "babel-preset-es2015": "^6.22.0",
-    "browser-sync": "^2.18.7",
-    "event-stream": "^3.3.4",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-clean": "^0.3.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-cssmin": "^0.1.7",
-    "gulp-html-replace": "^1.6.2",
-    "gulp-htmlmin": "^3.0.0",
-    "gulp-imagemin": "^3.1.1",
-    "gulp-postcss": "^6.3.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.4.1",
-    "gulp-uglify": "^2.0.1",
-    "imagemin-gifsicle": "^5.1.0",
-    "imagemin-jpegtran": "^5.0.2",
-    "imagemin-optipng": "^5.2.1",
-    "imagemin-svgo": "^5.2.1",
-    "pump": "^1.0.2",
-    "fs": "0.0.1-security",
-    "run-sequence": "^1.2.2",
-    "yargs": "^8.0.1"
-  },
-  "dependencies": {
-    "gulp-if": "^2.0.2",
-    "sprity": "^1.0.8",
-    "sprity-sass": "^1.0.4"
-  }
+	"name": "weskit",
+	"version": "2.0.0",
+	"description": "",
+	"main": "gulpfile.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/HDeiro/weskit.git"
+	},
+	"author": "Hugo Deiró <hugodeiro@gmail.com> (hdeiro.github.io)",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/HDeiro/weskit/issues"
+	},
+	"homepage": "https://github.com/HDeiro/weskit#readme",
+	"devDependencies": {
+		"@babel/core": "^7.3.4",
+		"@babel/preset-env": "^7.3.4",
+		"browser-sync": "^2.18.7",
+		"event-stream": "^3.3.4",
+		"fs": "0.0.1-security",
+		"gulp": "^3.9.1",
+		"gulp-autoprefixer": "^3.1.1",
+		"gulp-babel": "^8.0.0",
+		"gulp-clean": "^0.3.2",
+		"gulp-concat": "^2.6.1",
+		"gulp-cssmin": "^0.1.7",
+		"gulp-html-replace": "^1.6.2",
+		"gulp-htmlmin": "^3.0.0",
+		"gulp-if": "^2.0.2",
+		"gulp-imagemin": "^3.1.1",
+		"gulp-postcss": "^6.3.0",
+		"gulp-rename": "^1.2.2",
+		"gulp-sass": "^3.1.0",
+		"gulp-sourcemaps": "^2.4.1",
+		"gulp-uglify": "^2.0.1",
+		"gulp-util": "^3.0.8",
+		"imagemin-gifsicle": "^5.1.0",
+		"imagemin-jpegtran": "^5.0.2",
+		"imagemin-optipng": "^5.2.1",
+		"imagemin-svgo": "^5.2.1",
+		"pump": "^1.0.2",
+		"run-sequence": "^1.2.2",
+		"sprity": "^1.0.8",
+		"sprity-sass": "^1.0.4",
+		"yargs": "^8.0.1"
+	},
+	"dependencies": {}
 }

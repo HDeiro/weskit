@@ -25,6 +25,7 @@ const fs = require('fs');
 const yargs = require('yargs').argv;
 const gulpif = require('gulp-if');
 const sprity = require('sprity');
+const gutil = require('gulp-util');
 
 //####################################
 // List of Gulp tasks
@@ -70,44 +71,60 @@ const paths = {
         },
         "internal": {
             "destination": `${path_build}/js`,
-            "bundle": []
+            "bundle": ['www/**/*.js']
         },
         "external-critical": {
             "destination": `${path_build}/js`,
-            "bundle": []
+            "bundle": ['www/**/*.js']
         },
         "external": {
             "destination": `${path_build}/js`,
-            "bundle": []
+            "bundle": ['www/**/*.js']
         }
     },
     css: {
         "internal-critical": {
             "destination": `${path_build}/css`,
-            "bundle": []
+            "bundle": ['www/**/*.css']
         },
         "internal": {
             "destination": `${path_build}/css`,
-            "bundle": []
+            "bundle": ['www/**/*.css']
         },
         "external-critical": {
             "destination": `${path_build}/css`,
-            "bundle": []
+            "bundle": ['www/**/*.css']
         },
         "external": {
             "destination": `${path_build}/css`,
-            "bundle": []
+            "bundle": ['www/**/*.css']
         }
     }
 }
 
 //####################################
+// Global Variables
+//####################################
+
+const MODE_PRODUCTION = true;
+const JS_COMPRESS_OPTIONS = {
+    preserveComments: 'license',
+    compress: {
+        drop_console: true
+    }
+};
+const JS_BABEL_CONFIG = {
+    presets: ['@babel/env']
+};
+
+//####################################
 // Utilitary Functions
 //####################################
+
 const listBundle = (group, filter) => {
     return Object.keys(paths[group])
         .filter(bundle => paths[group][bundle].bundle.length)
-        .filter(bundle => filter ? filter == bundle : true)
+        .filter(bundle => filter ? filter == bundle : true);
 }
 
 //####################################
@@ -121,14 +138,35 @@ const listBundle = (group, filter) => {
 // JavaScript Bundler
 gulp.task(tasks.js.bundler, _ => {
     listBundle("js", yargs.bundle).forEach(bundle => {
-        gulp.src(paths.js[bundle].bundle)
+        let bundleItem = paths.js[bundle];
+
+        gulp.src(bundleItem.bundle)
+            .pipe(sourcemaps.init())
             .pipe(concat(`${bundle}.js`))
-            .pipe(babel({presets: ['es2015']}))
+            .pipe(babel(JS_BABEL_CONFIG))
+            .pipe(gulpif(MODE_PRODUCTION, uglify(JS_COMPRESS_OPTIONS)))
             .pipe(sourcemaps.write('.'))
             .pipe(bsync.stream({match: '**/*.js'}))
-            .pipe(gulp.dest(`${paths.js[bundle].destination}`))
+            .pipe(gulp.dest(`${bundleItem.destination}`))
+            .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+            .on('end', _ => gutil.log(gutil.colors.green(`\t[JS] Bundle ${bundleItem.destination}/${bundle}.js has been generated`)))
     });
 });
 
 // CSS Bundler
+gulp.task(tasks.css.bundler, _ => {
+    listBundle("css", yargs.bundle).forEach(bundle => {
+        let bundleItem = paths.css[bundle];
 
+        gulp.src(bundleItem.bundle)
+            .pipe(sourcemaps.init())
+            .pipe(concat(`${bundle}.css`))
+            .pipe(autoprefixer())
+            .pipe(gulpif(MODE_PRODUCTION, cssmin()))
+            .pipe(sourcemaps.write('.'))
+            .pipe(bsync.stream({match: '**/*.css'}))
+            .pipe(gulp.dest(`${bundleItem.destination}`))
+            .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+            .on('end', _ => gutil.log(gutil.colors.green(`\t[CSS] Bundle ${bundleItem.destination}/${bundle}.css has been generated`)))
+    });
+});
