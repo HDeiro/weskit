@@ -3,5 +3,6 @@ www/
 app/images/sprites/*
 app/styles/sprites.scss
 npm-debug.log
-
+.vscode
+package-lock.json
 !app/images/sprites/.gitkeep
