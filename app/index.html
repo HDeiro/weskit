@@ -5,20 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- Browser's header background color -->
     <meta name="theme-color" content="#000000">
     <meta name="msapplication-navbutton-color" content="#000000">
-    
+
     <!-- Robots info -->
     <meta name="robots" content="index">
     <meta name="googlebot" content="index">
-    
+
     <!-- Site info -->
     <meta name="description" content="">
-    <meta name="keywords" content="">    
-    <meta name="author" content="">    
-    <meta name="copyright" content="">    
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="copyright" content="">
 
     <!-- Add to homescreen for Chrome on Android -->
     <meta name="mobile-web-app-capable" content="no">
@@ -44,38 +44,18 @@
     <meta property="og:description" content="site description"> -->
 
     <title>WESKIT</title>
-    <link rel="shortcut icon" type="image/png" href="images/favicon.png"/> 
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png"/>
 
-    <!-- build:css -->
-        <!-- 
-            This CSS reference will be replaced by the content of the file
-            to reduce the file request number.
-        -->
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <!-- endbuild -->
+	<!-- build:css -->
+		<!-- Add critical CSS references here -->
+	<!-- endbuild -->
 </head>
 <body>
-    <!-- build:js-->
-        <!--
-            All JavaScripts should be set inside these comments.
-            That's because they'll be replaced for the concatenated/mified file when 
-            you call the gulp production task. 
-        -->
-    
-    <script src="js/script.js"></script>
-    <!-- endbuild -->
-    
-    <!-- Service Worker for cache handling -->
-    <script>
-        if('serviceWorker' in navigator) {
-            navigator.serviceWorker
-                .register('/pwa-cache-service-worker.js', { scope: '/' })
-                .then(registration => console.log('Service Worker Registered'));
+	<!-- build:js -->
+		<!-- Add critical JS references here -->
+	<!-- endbuild -->
 
-            navigator.serviceWorker.ready
-                .then(registration => console.log('Service Worker Ready'));
-        }
-    </script>
+    <!-- build:sw --><!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
     <script>

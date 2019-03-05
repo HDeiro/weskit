@@ -1,4 +1,4 @@
-// Gloabl variables
+// Global variables
 const version = "1.0.0";
 const cacheName = `MyApp-${version}`;
 

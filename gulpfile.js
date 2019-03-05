@@ -10,16 +10,12 @@ const sourcemaps = require('gulp-sourcemaps');
 const concat = require('gulp-concat');
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
-const pump = require('pump');
-const rename = require('gulp-rename');
 const htmlmin = require('gulp-htmlmin');
 const bsync = require('browser-sync').create();
 const imagemin = require('gulp-imagemin');
-const estream = require('event-stream');
 const cssmin = require('gulp-cssmin');
 const htmlreplace = require('gulp-html-replace');
 const runsequence = require('run-sequence');
-const clean = require('gulp-clean');
 const fs = require('fs');
 const yargs = require('yargs').argv;
 const gulpif = require('gulp-if');
@@ -27,6 +23,8 @@ const gutil = require('gulp-util');
 const jsonmin = require('gulp-jsonmin');
 const minifyInline = require('gulp-minify-inline');
 const spritesmith = require('gulp.spritesmith');
+const jimp = require('gulp-jimp');
+const glob = require("glob");
 const sass = require('gulp-sass');
 sass.compiler = require('node-sass');
 
@@ -61,7 +59,11 @@ const tasks = {
     sounds: "sounds",
 	videos: "videos",
 	images: "images",
-	sprites: "sprites"
+	sprites: "sprites",
+	icons: "icons",
+	server: "server",
+	production: "production",
+	generateAll: "generate-all"
 };
 
 //####################################
@@ -84,13 +86,12 @@ const paths = {
         "pwa-cache-service-worker": {
             buildTo: `${path_build}`,
             bundle: [`${path_source}/pwa-cache-service-worker.js`],
-            options: {
-                skipSourceMapGeneration: true
-            }
+			skipSourceMapGeneration: true
         },
         "internal-critical": {
             buildTo: `${path_build}/js`,
-            bundle: []
+			bundle: [],
+			skipSourceMapGeneration: true
         },
         "internal": {
             buildTo: `${path_build}/js`,
@@ -98,7 +99,8 @@ const paths = {
         },
         "external-critical": {
             buildTo: `${path_build}/js`,
-            bundle: []
+            bundle: [],
+			skipSourceMapGeneration: true
         },
         "external": {
             buildTo: `${path_build}/js`,
@@ -118,7 +120,8 @@ const paths = {
     sass: {
         "internal-critical": {
             buildTo: `${path_build}/css`,
-            bundle: []
+            bundle: [],
+			skipSourceMapGeneration: true
         },
         "internal": {
             buildTo: `${path_build}/css`,
@@ -126,11 +129,12 @@ const paths = {
         },
         "external-critical": {
             buildTo: `${path_build}/css`,
-            bundle: []
+            bundle: [],
+			skipSourceMapGeneration: true
         },
         "external": {
             buildTo: `${path_build}/css`,
-            bundle: ['www/**/*.scss']
+            bundle: []
         }
     },
     views: {
@@ -177,6 +181,10 @@ const paths = {
 		sprites: {
 			source: `${path_source}/images/sprites/*.{jpg,png,jpeg,gif,svg}`,
 			buildTo: `${path_build}/images`
+		},
+		icons: {
+			source: `${path_source}/images/pwa-icons/*.{jpg,png,jpeg,gif,svg}`,
+			buildTo: `${path_build}/images/pwa-icons/`
 		}
 	}
 }
@@ -218,69 +226,79 @@ const listBundle = (group, filter) => {
 //####################################
 
 // JavaScript Bundler
-gulp.task(tasks.js.bundler, _ => {
+gulp.task(tasks.js.bundler, done => {
     listBundle("js", yargs.bundle).forEach(bundle => {
         let bundleItem = paths.js[bundle];
 
         gulp.src(bundleItem.bundle)
-            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.init()))
+            .pipe(gulpif(!bundleItem.skipSourceMapGeneration, sourcemaps.init()))
             .pipe(concat(`${bundle}.js`))
             .pipe(babel(JS_BABEL_CONFIG))
             .pipe(gulpif(MODE_PRODUCTION, uglify(JS_COMPRESS_OPTIONS)))
-            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.write('.')))
+            .pipe(gulpif(!bundleItem.skipSourceMapGeneration, sourcemaps.write('.')))
             .pipe(bsync.stream({match: '**/*.js'}))
             .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-            .on('end', _ => gutil.log(gutil.colors.green(`\t[JS] Bundle ${bundleItem.buildTo}/${bundle}.js has been generated`)))
-    });
+            .on('end', _ => gutil.log(gutil.colors.green(`\t[JS] Bundle ${bundleItem.buildTo}/${bundle}.js has been generated`)));
+	});
+
+	return done();
 });
 
 // CSS Bundler
-gulp.task(tasks.css.bundler, _ => {
+gulp.task(tasks.css.bundler, done => {
     listBundle("css", yargs.bundle).forEach(bundle => {
         let bundleItem = paths.css[bundle];
 
         gulp.src(bundleItem.bundle)
-            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.init()))
+            .pipe(gulpif(!bundleItem.skipSourceMapGeneration, sourcemaps.init()))
             .pipe(concat(`${bundle}.css`))
             .pipe(autoprefixer())
             .pipe(gulpif(MODE_PRODUCTION, cssmin()))
-            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.write('.')))
+            .pipe(gulpif(!bundleItem.skipSourceMapGeneration, sourcemaps.write('.')))
             .pipe(bsync.stream({match: '**/*.css'}))
             .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
             .on('end', _ => gutil.log(gutil.colors.green(`\t[CSS] Bundle ${bundleItem.buildTo}/${bundle}.css has been generated`)))
-    });
+	});
+
+	return done();
 });
 
 // Sass Bundler
-gulp.task(tasks.sass.bundler, _ => {
+gulp.task(tasks.sass.bundler, done => {
     listBundle("sass", yargs.bundle).forEach(bundle => {
         let bundleItem = paths.sass[bundle];
 
         gulp.src(bundleItem.bundle)
-            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.init()))
+            .pipe(gulpif(!bundleItem.skipSourceMapGeneration, sourcemaps.init()))
             .pipe(sass(SASS_CONFIG))
             .pipe(concat(`${bundle}.css`))
             .pipe(autoprefixer())
             .pipe(gulpif(MODE_PRODUCTION, cssmin()))
-            .pipe(gulpif(!bundleItem.options.skipSourceMapGeneration, sourcemaps.write('.')))
+            .pipe(gulpif(!bundleItem.skipSourceMapGeneration, sourcemaps.write('.')))
             .pipe(bsync.stream({match: '**/*.css'}))
             .pipe(gulp.dest(`${bundleItem.buildTo}`))
             .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
             .on('end', _ => gutil.log(gutil.colors.green(`\t[SASS] Bundle ${bundleItem.buildTo}/${bundle}.css has been generated`)))
-    });
+	});
+
+	return done();
 });
 
 // JSON minifier
-gulp.task(tasks.jsons, () => {
+gulp.task(tasks.jsons, done => {
     gulp.src(paths.jsons.source)
         .pipe(jsonmin())
-        .pipe(gulp.dest(paths.jsons.buildTo));
+        .pipe(gulp.dest(paths.jsons.buildTo))
+        .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+		.on('end', _ => gutil.log(gutil.colors.green(`\t[JSON] JSON files has been processed`)));
+
+	return done();
 })
 
 // HTML compressor
-gulp.task(tasks.views, _ => {
+gulp.task(tasks.views, done => {
     gulp.src(paths.views.source)
         .pipe(htmlmin({
             collapseWhitespace: true,
@@ -294,43 +312,53 @@ gulp.task(tasks.views, _ => {
         .pipe(bsync.stream({match: '**/*.{html,php}'}))
         .pipe(gulp.dest(paths.views.buildTo))
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-        .on('end', _ => gutil.log(gutil.colors.green(`\t[View] The views has been generated`)));
+		.on('end', _ => gutil.log(gutil.colors.green(`\t[View] The views has been generated`)));
+
+	return done();
 });
 
 // Copy metadata
-gulp.task(tasks.metadata.copy, _ => {
+gulp.task(tasks.metadata.copy, done => {
     gulp.src(paths.metadata.source)
         .pipe(gulp.dest(paths.metadata.buildTo))
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-        .on('end', _ => gutil.log(gutil.colors.green(`\t[Metadata] Metadata files has been generated`)));
+		.on('end', _ => gutil.log(gutil.colors.green(`\t[Metadata] Metadata files has been generated`)));
+
+	return done();
 });
 
 // Copy fonts
-gulp.task(tasks.fonts, _ => {
+gulp.task(tasks.fonts, done => {
     gulp.src(paths.fonts.source)
         .pipe(gulp.dest(paths.fonts.buildTo))
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-        .on('end', _ => gutil.log(gutil.colors.green(`\t[Font] Font files has been generated`)));
+		.on('end', _ => gutil.log(gutil.colors.green(`\t[Font] Font files has been generated`)));
+
+	return done();
 });
 
 // Copy sounds
-gulp.task(tasks.sounds, _ => {
+gulp.task(tasks.sounds, done => {
     gulp.src(paths.sounds.source)
         .pipe(gulp.dest(paths.sounds.buildTo))
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-        .on('end', _ => gutil.log(gutil.colors.green(`\t[Sound] Sound files has been generated`)));
+		.on('end', _ => gutil.log(gutil.colors.green(`\t[Sound] Sound files has been generated`)));
+
+	return done();
 });
 
 // Copy videos
-gulp.task(tasks.videos, _ => {
+gulp.task(tasks.videos, done => {
     gulp.src(paths.videos.source)
         .pipe(gulp.dest(paths.videos.buildTo))
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-        .on('end', _ => gutil.log(gutil.colors.green(`\t[Video] Video files has been generated`)));
+		.on('end', _ => gutil.log(gutil.colors.green(`\t[Video] Video files has been generated`)));
+
+	return done();
 });
 
 // Image compression
-gulp.task(tasks.images, _ => {
+gulp.task(tasks.images, done => {
 	gulp.src(paths.images.compress.source)
 		.pipe(imagemin([
 			imagemin.gifsicle({interlaced: true, optimizationLevel: 2}),
@@ -340,11 +368,13 @@ gulp.task(tasks.images, _ => {
 		]))
 		.pipe(gulp.dest(paths.images.compress.buildTo))
         .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
-        .on('end', _ => gutil.log(gutil.colors.green(`\t[Image] Image files has been generated`)));
+		.on('end', _ => gutil.log(gutil.colors.green(`\t[Image] Image files has been generated`)));
+
+	return done();
 });
 
 // Images sprites
-gulp.task(tasks.sprites, _ => {
+gulp.task(tasks.sprites, done => {
 	gulp.src(paths.images.sprites.source)
 		.pipe(spritesmith({
 			cssName: `generated-sprite.css`,
@@ -356,4 +386,105 @@ gulp.task(tasks.sprites, _ => {
 			gutil.log(gutil.colors.green(`\t[Sprite] Sprite SASS file has been generated`));
 			gutil.log(gutil.colors.yellow(`\t[Sprite] Move and edit the ${paths.images.sprites.buildTo}/generated-sprite.css as you need`));
 		});
+
+	return done();
+});
+
+// Icons
+gulp.task(tasks.icons, done => {
+	gulp.src(paths.images.icons.source)
+		.pipe(jimp({
+			'-72x72': {resize: { width: 72, heigth: 72}},
+			'-96x96': {resize: { width: 96, heigth: 96}},
+			'-128x128': {resize: { width: 128, heigth: 128}},
+			'-144x144': {resize: { width: 144, heigth: 144}},
+			'-152x152': {resize: { width: 152, heigth: 152}},
+			'-192x192': {resize: { width: 192, heigth: 192}},
+			'-384x384': {resize: { width: 384, heigth: 384}},
+			'-512x512': {resize: { width: 512, heigth: 512}},
+			'-120x120': {resize: { width: 120, heigth: 120}},
+			'-180x180': {resize: { width: 180, heigth: 180}}
+		}))
+		.pipe(gulp.dest(paths.images.icons.buildTo))
+        .on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+		.on('end', _ => gutil.log(gutil.colors.green(`\t[Icon] Icon files has been generated`)));
+
+	return done();
+});
+
+// Server
+gulp.task(tasks.server, () => {
+	bsync.init({server: {baseDir: `${path_build}/`}});
+
+	gulp.watch(`${path_source}/**/*.js`, [tasks.js.bundler]).on('change', bsync.reload);
+	gulp.watch(`${path_source}/styles/**/*.css`, [tasks.css.bundler]).on('change', bsync.reload);
+	gulp.watch(`${path_source}/styles/**/*.{scss,sass}`, [tasks.sass.bundler]).on('change', bsync.reload);
+	gulp.watch(`${path_source}/**/*.{html,php}`, [tasks.views]).on('change', bsync.reload);
+	gulp.watch(`${path_source}/**/*.json`, [tasks.jsons]).on('change', bsync.reload);
+});
+
+// Generate all assets
+gulp.task(tasks.generateAll, done => {
+	runsequence(
+		tasks.js.bundler,
+		tasks.css.bundler,
+		tasks.sass.bundler,
+		tasks.views,
+		tasks.jsons,
+		tasks.metadata.copy,
+		tasks.fonts,
+		tasks.sounds,
+		tasks.videos,
+		tasks.images,
+		tasks.sprites,
+		tasks.icons,
+		done
+	)
+})
+
+// Generate Production code
+gulp.task(tasks.production, done => {
+	// Fetch the critical JS
+	new Promise(resolve => {
+		glob(`${path_build}/js/*-critical.js`, {}, (err, files) => {
+			let criticalJS = "<script id=\"critical-js\">" + files.reduce((content, file) => content += fs.readFileSync(file, 'utf8'), "") + "</script>";
+			criticalJS.split('../').join(''); // Strip out all "../" to refer via index.html
+			resolve(criticalJS)
+		});
+	}).then(criticalJS => new Promise(resolve => {
+		glob(`${path_build}/css/*-critical.css`, {}, (err, files) => {
+			let criticalCSS = "<style id=\"critical-css\">" + files.reduce((content, file) => content += fs.readFileSync(file, 'utf8'), "") + "</style>";
+			criticalCSS.split('../').join(''); // Strip out all "../" to refer via index.html
+			resolve({
+				css: criticalCSS,
+				js: criticalJS
+			});
+		});
+	})).then(critical => {
+		critical.sw =  `
+			<script>
+				if('serviceWorker' in navigator) {
+					navigator.serviceWorker
+						.register('pwa-cache-service-worker.js', { scope: '/' })
+						.then(registration => console.log('The Cache Service Worker has been registered'));
+
+					navigator.serviceWorker.ready
+						.then(registration => console.log('Service Worker Ready'));
+				}
+			</script>
+		`;
+
+		// Replace code
+		gulp.src(`${path_build}/index.{html,php}`)
+			.pipe(htmlreplace(critical))
+			.pipe(minifyInline())
+			.pipe(htmlmin({
+				collapseWhitespace: true,
+				removeComments: true
+			}))
+			.pipe(gulp.dest(path_build))
+			.on('error', err => gutil.log(gutil.colors.red('[Error]'), err.toString()))
+			.on('end', _ => gutil.log(gutil.colors.green(`\tProduction code has been sucessfully generated`)));
+		done();
+	});
 });
