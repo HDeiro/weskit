@@ -51,7 +51,7 @@ const tasks = {
         bundler: 'sass'
     },
     metadata: {
-        copy: "copy-metadata"
+        copy: "generate-metadata"
     },
     jsons: "jsons",
     views: "views",
