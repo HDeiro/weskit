@@ -4,9 +4,9 @@ The weskit project provides the basic infrastructure for a webproject using Gulp
 
 ## Dependencies
 
-2. [NPM](https://nodejs.org/en/)
+1. [NPM](https://nodejs.org/en/)
 
-3. Gulp
+2. Gulp
 
 ```
 npm i -g gulp
