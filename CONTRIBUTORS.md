@@ -5,4 +5,4 @@
 
 - Second version of weskit
   - Hugo Deiró (hdeiro)
-	- Junior Mascarenhas (juniorug)
+  - Junior Mascarenhas (juniorug)
