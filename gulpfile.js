@@ -26,6 +26,7 @@ const spritesmith = require('gulp.spritesmith');
 const jimp = require('gulp-jimp');
 const glob = require("glob");
 const sass = require('gulp-sass');
+const del = require('del');
 sass.compiler = require('node-sass');
 
 //####################################
@@ -41,29 +42,30 @@ sass.compiler = require('node-sass');
 //####################################
 
 const tasks = {
-    js: {
-        bundler: 'js'
-    },
-    css: {
-        bundler: 'css'
-    },
-    sass: {
-        bundler: 'sass'
-    },
-    metadata: {
-        copy: "generate-metadata"
-    },
-    jsons: "jsons",
-    views: "views",
-    fonts: "fonts",
-    sounds: "sounds",
+  js: {
+      bundler: 'js'
+  },
+  css: {
+      bundler: 'css'
+  },
+  sass: {
+      bundler: 'sass'
+  },
+  metadata: {
+      copy: "generate-metadata"
+  },
+  jsons: "jsons",
+  views: "views",
+  fonts: "fonts",
+  sounds: "sounds",
 	videos: "videos",
 	images: "images",
 	sprites: "sprites",
 	icons: "icons",
 	server: "server",
 	production: "production",
-	generateAll: "generate-all"
+  generateAll: "generate-all",
+  clean: "clean"
 };
 
 //####################################
@@ -224,6 +226,11 @@ const listBundle = (group, filter) => {
 // with code concatenation, uglification,
 // replaces and a lot of other possibilities
 //####################################
+
+//clean www directory
+gulp.task(tasks.clean, function () {
+  return del('www/**', { force: true });
+});
 
 // JavaScript Bundler
 gulp.task(tasks.js.bundler, done => {
@@ -426,6 +433,7 @@ gulp.task(tasks.server, () => {
 // Generate all assets
 gulp.task(tasks.generateAll, done => {
 	runsequence(
+    tasks.clean,
 		tasks.js.bundler,
 		tasks.css.bundler,
 		tasks.sass.bundler,

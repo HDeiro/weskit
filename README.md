@@ -32,6 +32,14 @@ There are two environments, ```app``` and ```www```. The source code that will b
 
 The gulp tasks bellow were explained bellow.
 
+### Clean the www directory
+
+It'll delete all files from ```www/```.
+
+```
+gulp clean
+```
+
 ### Compile all JavaScript bundles
 
 It'll compile all JS bundles and provide them to ```www/js```.
