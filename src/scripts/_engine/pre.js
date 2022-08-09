@@ -1,4 +1,4 @@
-fetch('./settings/settings.json')
+fetch('./settings.json')
 	.then(resp => resp.json())
 	.then(loadConfigurations);
 
