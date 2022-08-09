@@ -9,6 +9,7 @@ This project supports settings that can be found in `src/settings/settings.json`
 - Enable/Disable built-in animation library;
 - Set Google Analytics by adding the UA-key (if not provided, GA is not added);
 - Override meta-tags via configurations;
+- Load async CSS files;
 - PWA Settings:
 	- Enable the PWA capability;
 	- Version of the PWA;
