@@ -3,10 +3,13 @@
 	"version": "3.0.0",
 	"description": "A template for web pages development",
 	"scripts": {
+		"build": "npm run copy:assets; npm run copy:scripts; npm run copy:html; npm run sass; npm run optimize",
+		"start": "npm run copy:assets; concurrently 'npm:watch' 'npm:serve'",
 		"watch": "concurrently 'npm:watch:*'",
+		"serve": "browser-sync start --server 'dist' --files 'dist'",
 		"optimize": "concurrently 'npm:optimize:*'",
 		"watch:sass": "npm run sass; node-sass -w src/styles -o dist --output-style compressed",
-		"watch:scripts": "watch 'npm run copy:scripts' src/scripts --filter=./scripts/watch-filter-js.js --interval=1",
+		"watch:scripts": "watch 'npm run copy:scripts' src/scripts --interval=1",
 		"watch:html": "watch 'npm run copy:html' src --filter=./scripts/watch-filter-html.js --interval 1",
 		"copy:assets": "copy-assets src dist --exts=.json,.png,.jpg,.jpeg,.webp,.gif,.txt",
 		"copy:scripts": "copy-assets src dist --exts=.js",
@@ -27,6 +30,7 @@
 	},
 	"homepage": "https://github.com/HDeiro/weskit#readme",
 	"devDependencies": {
+		"browser-sync": "2.27.10",
 		"concurrently": "7.3.0",
 		"copy-assets": "1.0.3",
 		"esm": "3.2.25",

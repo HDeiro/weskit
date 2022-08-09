@@ -1,0 +1,15 @@
+{
+	"googleAnalytics": "UA-XXXXX-X",
+	"asyncCss": [],
+	"pwa": {
+		"enabled": false,
+		"version": "1.0.0",
+		"cache": {
+			"namePrefix": "MyApp",
+			"files": [
+				"/",
+				"/index.html"
+			]
+		}
+	}
+}
