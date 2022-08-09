@@ -5,7 +5,7 @@
 	"scripts": {
 		"sass": "node-sass src/styles -o dist --output-style compressed",
 		"sass:watch": "node-sass -w src/styles -o dist --output-style compressed",
-		"copy:assets": "copy-assets src dist --exts=.json,.png,.jpg,.gif,.txt"
+		"assets:copy": "copy-assets src dist --exts=.json,.png,.jpg,.webp,.gif,.txt"
 	},
 	"repository": {
 		"type": "git",
