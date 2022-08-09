@@ -3,8 +3,9 @@
 	"version": "3.0.0",
 	"description": "A template for web pages development",
 	"scripts": {
-		"sass": "node-sass app/styles -o dist --output-style compressed",
-		"sass:watch": "node-sass -w app/styles -o dist --output-style compressed"
+		"sass": "node-sass src/styles -o dist --output-style compressed",
+		"sass:watch": "node-sass -w src/styles -o dist --output-style compressed",
+		"copy:assets": "copy-assets src dist --exts=.json,.png,.jpg,.gif,.txt"
 	},
 	"repository": {
 		"type": "git",
@@ -17,8 +18,7 @@
 	},
 	"homepage": "https://github.com/HDeiro/weskit#readme",
 	"devDependencies": {
+		"copy-assets": "^1.0.3",
 		"node-sass": "7.0.1"
-	},
-	"dependencies": {
 	}
 }
