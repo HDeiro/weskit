@@ -5,7 +5,9 @@
 	"scripts": {
 		"sass": "node-sass src/styles -o dist --output-style compressed",
 		"sass:watch": "node-sass -w src/styles -o dist --output-style compressed",
-		"assets:copy": "copy-assets src dist --exts=.json,.png,.jpg,.webp,.gif,.txt"
+		"assets:copy": "copy-assets src dist --exts=.json,.png,.jpg,.webp,.gif,.txt",
+		"scripts:copy": "copy-assets src dist --exts=.js",
+		"scripts:optimize": "uglifyjs-folder dist --each --extension .js -o dist"
 	},
 	"repository": {
 		"type": "git",
@@ -18,7 +20,8 @@
 	},
 	"homepage": "https://github.com/HDeiro/weskit#readme",
 	"devDependencies": {
-		"copy-assets": "^1.0.3",
-		"node-sass": "7.0.1"
+		"copy-assets": "1.0.3",
+		"node-sass": "7.0.1",
+		"uglifyjs-folder": "3.1.2"
 	}
 }
