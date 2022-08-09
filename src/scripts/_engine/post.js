@@ -118,6 +118,19 @@ function startAnimationListeners() {
 	eventsToBeListening.forEach(event => window.addEventListener(event, checkOffset, false));
 }
 
+/**
+ * Override the meta tags defined in `overrideMetaTags` on the `window.appConfigs`
+ * by the value set on the configurations.
+ */
+function overrideMetaTags() {
+	const overrides = Object.entries(window.appConfigs.overrideMetaTags || {});
+
+	overrides.forEach(([meta, content]) => {
+		const tag = document.querySelector(`meta[name="${meta}"]`);
+		if (tag) tag.setAttribute("content", content);
+	});
+}
+
 window.addEventListener('settingsAreReady', () => {
 	// If use animations, leverages the `loadAsyncCss` to fetch animations.css
 	if (window.appConfigs.useAnimations)
@@ -127,4 +140,5 @@ window.addEventListener('settingsAreReady', () => {
 	loadGoogleAnalytics();
 	loadPwa();
 	startAnimationListeners();
+	overrideMetaTags();
 })

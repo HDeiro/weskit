@@ -2,6 +2,10 @@
 	"useAnimations": true,
 	"googleAnalytics": "UA-XXXXX-X",
 	"asyncCss": [],
+	"overrideMetaTags": {
+		"theme-color": "#123000",
+		"msapplication-navbutton-color": "#123000"
+	},
 	"pwa": {
 		"enabled": false,
 		"version": "1.0.0",
