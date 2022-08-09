@@ -5,14 +5,11 @@
 	"scripts": {
 		"sass": "node-sass src/styles -o dist --output-style compressed",
 		"sass:watch": "node-sass -w src/styles -o dist --output-style compressed",
-
 		"assets:copy": "copy-assets src dist --exts=.json,.png,.jpg,.jpeg,.webp,.gif,.txt",
 		"assets:optimize:json": "node -r esm ./scripts/minify-json.js",
-
 		"scripts:copy": "copy-assets src dist --exts=.js",
 		"scripts:optimize": "uglifyjs-folder dist --each --extension .js -o dist",
 		"scripts:watch": "watch 'npm run scripts:copy' src/scripts --filter=./scripts/watch-filter-js.js --interval=1",
-
 		"html:copy": "copy-assets src dist --exts=.html",
 		"html:optimize": "html-minifier --file-ext html --input-dir ./dist --output-dir ./dist --collapse-whitespace --remove-comments --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true",
 		"html:watch": "watch 'npm run html:copy' src --filter=./scripts/watch-filter-html.js --interval 1"
@@ -28,6 +25,7 @@
 	},
 	"homepage": "https://github.com/HDeiro/weskit#readme",
 	"devDependencies": {
+		"concurrently": "^7.3.0",
 		"copy-assets": "1.0.3",
 		"esm": "3.2.25",
 		"glob": "8.0.3",
