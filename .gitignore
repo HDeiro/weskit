@@ -1,8 +1,5 @@
 node_modules/
-www/
-app/images/sprites/*
-app/styles/sprites.scss
+dist/
 npm-debug.log
 .vscode
 package-lock.json
-!app/images/sprites/.gitkeep
