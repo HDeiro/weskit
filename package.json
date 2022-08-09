@@ -6,6 +6,7 @@
 		"sass": "node-sass src/styles -o dist --output-style compressed",
 		"sass:watch": "node-sass -w src/styles -o dist --output-style compressed",
 		"assets:copy": "copy-assets src dist --exts=.json,.png,.jpg,.webp,.gif,.txt",
+		"assets:optimize:json": "node ./scripts/minify-json.js",
 		"scripts:copy": "copy-assets src dist --exts=.js",
 		"scripts:optimize": "uglifyjs-folder dist --each --extension .js -o dist"
 	},
