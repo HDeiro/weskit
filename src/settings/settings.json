@@ -3,8 +3,8 @@
 	"googleAnalytics": "UA-XXXXX-X",
 	"asyncCss": [],
 	"overrideMetaTags": {
-		"theme-color": "#123000",
-		"msapplication-navbutton-color": "#123000"
+		"theme-color": "#000000",
+		"msapplication-navbutton-color": "#000000"
 	},
 	"pwa": {
 		"enabled": false,
