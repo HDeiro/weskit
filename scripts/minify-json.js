@@ -1,5 +1,4 @@
 const fs = require('fs')
-const { resolve } = require('path');
 const { getFilesFromFolder } = require('./utils/files');
 
 const src = './dist';
