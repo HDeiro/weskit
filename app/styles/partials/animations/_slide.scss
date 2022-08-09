@@ -1,0 +1,132 @@
+@import '../../utils/mixins/add-class-animation-name';
+
+// ############################################################
+// Keyframes
+// ############################################################
+
+@keyframes slide-up-in {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-up-out {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slide-down-in {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-down-out {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slide-left-in {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-left-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slide-right-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-right-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+// ############################################################
+// Animation classes styling
+// ############################################################
+
+.slide-up-in,
+.slide-down-in,
+.slide-left-in,
+.slide-right-in,
+.slide-up-out,
+.slide-down-out,
+.slide-left-out,
+.slide-right-out {
+    will-change: transform;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-duration: 700ms;
+}
+
+.slide-up-in,
+.slide-down-in,
+.slide-left-in,
+.slide-right-in {
+    opacity: 0;
+}
+
+.slide-up-out,
+.slide-down-out,
+.slide-left-out,
+.slide-right-out {
+    opacity: 1;
+}
+
+// ############################################################
+// Animation class creation
+// ############################################################
+
+@include add-class-animation-name(
+	'slide-up-in',
+	'slide-up-out',
+	'slide-down-in',
+	'slide-down-out',
+	'slide-left-in',
+	'slide-left-out',
+	'slide-right-in',
+	'slide-right-out'
+);

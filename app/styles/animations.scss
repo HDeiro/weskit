@@ -1,0 +1,14 @@
+@import 'partials/animations/slide';
+@import 'partials/animations/fade';
+@import 'partials/animations/zoom';
+@import 'partials/animations/pulse';
+@import 'partials/animations/flip';
+@import 'partials/animations/bounce';
+
+// ############################################################
+// General
+// ############################################################
+
+.forever{
+    animation-iteration-count: infinite;
+}

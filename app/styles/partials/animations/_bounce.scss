@@ -1,0 +1,75 @@
+
+@import '../../utils/mixins/add-class-animation-name';
+
+// ############################################################
+// Keyframes
+// ############################################################
+
+@keyframes bounce-top-in{
+    0% {
+        transform: translateY(-150%);
+    }
+    30% {
+        transform: translateY(0);
+    }
+    45% {
+        transform: translateY(-50%);
+    }
+    55% {
+        transform: translateY(0);
+    }
+    65% {
+        transform: translateY(-25%);
+    }
+    70% {
+        transform: translateY(0);
+    }
+    80% {
+        transform: translateY(-10%);
+    }
+    90% {
+        transform: translateY(0);
+    }
+    95% {
+        transform: translateY(-5%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+	0%, 20%, 50%, 80%, 100% {
+		transform:  translateY(0);
+	}
+	40% {
+		transform:  translateY(-50%);
+	}
+	60% {
+		transform:  translateY(-25%);
+	}
+}
+
+// ############################################################
+// Animation classes styling
+// ############################################################
+
+.bounce-top-in {
+    will-change: transform;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-duration: 800ms;
+}
+
+.bounce {
+	animation-iteration-count:  infinite;
+}
+
+// ############################################################
+// Animation class creation
+// ############################################################
+
+@include add-class-animation-name(
+	'bounce-top-in',
+	'bounce'
+);

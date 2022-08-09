@@ -1,0 +1,7 @@
+@mixin add-class-animation-name($animations...) {
+	@each $animation in $animations {
+		.#{$animation} {
+			animation-name: #{$animation};
+		}
+	}
+}

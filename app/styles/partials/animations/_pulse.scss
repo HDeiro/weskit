@@ -1,0 +1,36 @@
+@import '../../utils/mixins/add-class-animation-name';
+
+// ############################################################
+// Keyframes
+// ############################################################
+
+@keyframes pulse{
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+// ############################################################
+// Animation classes styling
+// ############################################################
+
+.pulse {
+    will-change: transform;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-duration: 400ms;
+}
+
+// ############################################################
+// Animation class creation
+// ############################################################
+
+// Note: this could've been added through declaration of function but I preferred
+// to keep this here just for consistency over the animation files
+@include add-class-animation-name('pulse');

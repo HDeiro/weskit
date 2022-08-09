@@ -1,0 +1,43 @@
+@import '../../utils/mixins/add-class-animation-name';
+
+// ############################################################
+// Keyframes
+// ############################################################
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+// ############################################################
+// Animation classes styling
+// ############################################################
+
+.fade-in, .fade-out {
+    will-change: opacity;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-duration: 600ms;
+}
+
+// ############################################################
+// Animation class creation
+// ############################################################
+
+@include add-class-animation-name(
+	'fade-in',
+	'fade-out'
+);

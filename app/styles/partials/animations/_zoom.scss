@@ -1,0 +1,89 @@
+@import '../../utils/mixins/add-class-animation-name';
+
+// ############################################################
+// Keyframes
+// ############################################################
+
+@keyframes zoom-in {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes zoom-in-radial {
+    from {
+        transform: scale(0);
+        border-radius: 100%;
+    }
+    to {
+        transform: scale(1);
+        border-radius: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes zoom-out {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes zoom-out-radial {
+    from {
+        transform: scale(1);
+        border-radius: 100%
+    }
+    to {
+        transform: scale(0);
+        opacity: 0;
+        border-radius: 0;
+    }
+}
+
+// ############################################################
+// Animation classes styling
+// ############################################################
+
+.zoom-in-radial, .zoom-in {
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-duration: 400ms;
+}
+
+.zoom-in-radial, .zoom-in {
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.zoom-in-radial {
+    will-change: transform, opacity, border-radius;
+    border-radius: 100%;
+}
+
+.zoom-out-radial, .zoom-out {
+    will-change: transform, opacity;
+    opacity: 1;
+}
+
+.zoom-out-radial {
+    will-change: transform, opacity, border-radius;
+}
+
+// ############################################################
+// Animation class creation
+// ############################################################
+
+@include add-class-animation-name(
+	'zoom-in',
+	'zoom-in-radial',
+	'zoom-out-radial',
+	'zoom-out-radial',
+);
