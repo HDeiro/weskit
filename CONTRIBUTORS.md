@@ -1,8 +1,11 @@
 ## Contributors
 
-- First version of Weskit
+- WESKIT 1.0.0
   - Hugo Deiró (hdeiro)
 
-- Second version of weskit
+- WESKIT 2.0.0
   - Hugo Deiró (hdeiro)
   - Junior Mascarenhas (juniorug)
+
+- WESKIT 3.0.0
+  - Hugo Deiró (hdeiro)
