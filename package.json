@@ -3,11 +3,10 @@
 	"version": "3.0.0",
 	"description": "A template for web pages development",
 	"scripts": {
-		"build": "npm run copy:assets; npm run copy:scripts; npm run copy:html; npm run sass; npm run optimize",
+		"build": "rimraf ./dist/* && concurrently 'npm:copy:*' && npm run sass && concurrently 'npm:optimize:*'",
 		"start": "npm run copy:assets; concurrently 'npm:watch' 'npm:serve'",
 		"watch": "concurrently 'npm:watch:*'",
 		"serve": "browser-sync start --server 'dist' --files 'dist'",
-		"optimize": "concurrently 'npm:optimize:*'",
 		"watch:sass": "npm run sass; node-sass -w src/styles -o dist --output-style compressed",
 		"watch:scripts": "watch 'npm run copy:scripts' src/scripts --interval=1",
 		"watch:html": "watch 'npm run copy:html' src --filter=./scripts/watch-filter-html.js --interval 1",
@@ -37,6 +36,7 @@
 		"glob": "8.0.3",
 		"html-minifier": "4.0.0",
 		"node-sass": "7.0.1",
+		"rimraf": "^3.0.2",
 		"uglifyjs-folder": "3.1.2",
 		"watch": "1.0.2"
 	}

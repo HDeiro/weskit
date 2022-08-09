@@ -1,4 +1,5 @@
 {
+	"useAnimations": true,
 	"googleAnalytics": "UA-XXXXX-X",
 	"asyncCss": [],
 	"pwa": {
