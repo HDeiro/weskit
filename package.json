@@ -3,7 +3,8 @@
 	"version": "3.0.0",
 	"description": "A template for web pages development",
 	"scripts": {
-		"sass": ""
+		"sass": "node-sass app/styles -o dist --output-style compressed",
+		"sass:watch": "node-sass -w app/styles -o dist --output-style compressed"
 	},
 	"repository": {
 		"type": "git",
@@ -16,6 +17,7 @@
 	},
 	"homepage": "https://github.com/HDeiro/weskit#readme",
 	"devDependencies": {
+		"node-sass": "7.0.1"
 	},
 	"dependencies": {
 	}
