@@ -35,7 +35,7 @@
 		"esm": "3.2.25",
 		"glob": "8.0.3",
 		"html-minifier": "4.0.0",
-		"node-sass": "7.0.1",
+		"node-sass": "8.0.0",
 		"rimraf": "3.0.2",
 		"uglifyjs-folder": "3.1.2",
 		"watch": "1.0.2"
