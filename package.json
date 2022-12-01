@@ -30,7 +30,7 @@
 	"homepage": "https://github.com/HDeiro/weskit#readme",
 	"devDependencies": {
 		"browser-sync": "2.27.10",
-		"concurrently": "7.3.0",
+		"concurrently": "7.6.0",
 		"copy-assets": "1.0.3",
 		"esm": "3.2.25",
 		"glob": "8.0.3",
